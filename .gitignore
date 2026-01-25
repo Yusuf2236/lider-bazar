@@ -1,3 +1,4 @@
 admin
 .next
 node_modules
+.vercel

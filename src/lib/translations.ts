@@ -48,6 +48,9 @@ export const translations = {
             copyright: 'Barcha huquqlar himoyalangan.',
             rights: 'Lider Bazar.',
         },
+        catalog: {
+            itemsFound: 'mahsulotlar topildi',
+        },
     },
     ru: {
         header: {
@@ -96,6 +99,9 @@ export const translations = {
             copyright: 'Все права защищены.',
             rights: 'Lider Bazar.',
         },
+        catalog: {
+            itemsFound: 'товаров найдено',
+        },
     },
     en: {
         header: {
@@ -143,6 +149,9 @@ export const translations = {
         footer: {
             copyright: 'All rights reserved.',
             rights: 'Lider Bazar.',
+        },
+        catalog: {
+            itemsFound: 'items found',
         },
     },
 };

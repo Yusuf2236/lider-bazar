@@ -12,13 +12,19 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-    const [locale, setLocale] = useState<Locale>('uz'); // Default to Uzbek
+    const [locale, setLocale] = useState<Locale>(() => {
+        if (typeof window !== 'undefined') {
+            const savedLocale = localStorage.getItem('locale') as Locale;
+            if (savedLocale && ['uz', 'ru', 'en'].includes(savedLocale)) {
+                return savedLocale;
+            }
+        }
+        return 'uz';
+    });
 
     useEffect(() => {
-        const savedLocale = localStorage.getItem('locale') as Locale;
-        if (savedLocale && ['uz', 'ru', 'en'].includes(savedLocale)) {
-            setLocale(savedLocale);
-        }
+        // This effect is now only for potential synchronization if needed, 
+        // but lazy init covers the initial load.
     }, []);
 
     const changeLocale = (newLocale: Locale) => {
