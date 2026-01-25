@@ -1,0 +1,116 @@
+.searchWrapper {
+    width: 100%;
+    position: relative;
+}
+
+.searchBar {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.85rem 1.5rem;
+    padding-left: 3rem;
+    border: 1px solid var(--glass-border);
+    /* Subtle border */
+    border-radius: 99px;
+    background: rgba(128, 128, 128, 0.08);
+    /* Super light gray translucent */
+    backdrop-filter: blur(10px);
+    color: var(--foreground);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.searchInput:focus {
+    outline: none;
+    background: var(--card-bg);
+    box-shadow: 0 0 0 4px rgba(229, 94, 22, 0.15);
+    /* Soft orange glow */
+}
+
+/* Placeholder color fixing */
+.searchInput::placeholder {
+    color: var(--gray-400);
+}
+
+.searchIconLeft {
+    position: absolute;
+    left: 1.25rem;
+    color: var(--gray-400);
+    font-size: 1.1rem;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.suggestions {
+    position: absolute;
+    top: 130%;
+    left: 0;
+    right: 0;
+    background: var(--glass-bg);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    z-index: 60;
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.75rem;
+}
+
+.suggestionItem {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    gap: 1rem;
+    border-radius: 12px;
+    transition: background-color 0.2s;
+    text-decoration: none;
+}
+
+.suggestionItem:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.imageWrapper {
+    width: 48px;
+    height: 48px;
+    position: relative;
+    flex-shrink: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.productImage {
+    object-fit: contain;
+}
+
+.productInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.productName {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--foreground);
+}
+
+.productPrice {
+    color: var(--primary-orange);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.noResults {
+    padding: 1rem;
+    text-align: center;
+    color: var(--gray-400);
+}

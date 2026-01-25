@@ -1,0 +1,84 @@
+.heroBanner {
+    background: transparent;
+    /* Changed from hardcoded light gradient to fix Dark Mode text visibility */
+    padding: 4rem 1rem 6rem 1rem;
+    /* Extra padding bottom */
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.titleContainer {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.heroTitle {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--foreground);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.brandName {
+    color: var(--primary-orange);
+}
+
+.heroSubtitle {
+    font-size: 1.1rem;
+    color: var(--gray-400);
+    /* Slightly lighter gray as per screenshot */
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.discountSection {
+    padding: 3rem 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.tagIcon {
+    color: var(--primary-orange);
+    font-size: 1.5rem;
+    transform: rotate(90deg);
+    /* Style choice to match potential icon orientation */
+}
+
+.sectionTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--foreground);
+}
+
+.highlight {
+    color: var(--primary-orange);
+}
+
+.carouselContainer {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    padding-bottom: 2rem;
+    /* Space for shadows */
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+.carouselContainer::-webkit-scrollbar {
+    display: none;
+}
+
+.cardWrapper {
+    min-width: 300px;
+    /* Slightly wider cards as per design */
+    max-width: 300px;
+}

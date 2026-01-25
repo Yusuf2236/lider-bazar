@@ -1,0 +1,96 @@
+.container {
+    max-width: 800px;
+    margin: 4rem auto;
+    padding: 0 1.5rem;
+}
+
+.card {
+    padding: 2.5rem;
+    border-radius: 28px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.header h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--foreground);
+}
+
+.icon {
+    font-size: 1.5rem;
+    color: var(--primary-orange);
+}
+
+.ordersList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.orderItem {
+    padding: 1.5rem;
+    background: rgba(128, 128, 128, 0.05);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+}
+
+.orderTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.orderId {
+    font-weight: 700;
+    color: var(--primary-orange);
+}
+
+.orderDate {
+    font-size: 0.9rem;
+    color: var(--gray-400);
+}
+
+.status {
+    padding: 0.4rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.statusDone {
+    background: rgba(50, 215, 75, 0.1);
+    color: #32d74b;
+}
+
+.statusPending {
+    background: rgba(255, 159, 10, 0.1);
+    color: #ff9f0a;
+}
+
+.orderBody {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.items {
+    font-size: 0.95rem;
+    color: var(--foreground);
+    opacity: 0.8;
+}
+
+.total {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--foreground);
+}

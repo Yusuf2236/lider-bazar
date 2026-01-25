@@ -1,0 +1,182 @@
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    overflow: visible;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    /* Very subtle shadow */
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.imageLink {
+    display: block;
+    position: relative;
+    width: 100%;
+    padding-top: 90%;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    overflow: hidden;
+    background: transparent;
+}
+
+.imageWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+    transition: transform 0.3s;
+}
+
+.card:hover .image {
+    transform: scale(1.05);
+    /* Subtle zoom */
+}
+
+.wishlistButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 20;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: var(--gray-400);
+    transition: all 0.2s;
+}
+
+.wishlistButton:hover {
+    background: #fff;
+    transform: scale(1.1);
+    color: #ef4444;
+    /* Red on hover */
+}
+
+.heartFilled {
+    color: #ef4444;
+}
+
+.discountBadge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    /* iOS style often puts tags left */
+    right: auto;
+    background: rgba(239, 68, 68, 0.1);
+    /* Translucent red */
+    color: #ff3b30;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+}
+
+.content {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--foreground);
+    font-size: 1.05rem;
+    line-height: 1.4;
+    height: 2.8em;
+    /* restrict height */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.rating {
+    color: #ffcc00;
+    /* Apple yellow */
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+}
+
+.ratingValue {
+    color: var(--gray-400);
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.footer {
+    margin-top: auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.priceInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.oldPrice {
+    text-decoration: line-through;
+    color: var(--gray-400);
+    font-size: 0.85rem;
+}
+
+.price {
+    color: var(--foreground);
+    /* Clean black/white price */
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.addButton {
+    background: rgba(229, 94, 22, 0.1);
+    /* Translucent orange */
+    color: var(--primary-orange);
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.addButton:hover {
+    background: var(--primary-orange);
+    color: white;
+    transform: scale(1.05);
+}

@@ -1,0 +1,238 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Reduced opacity for more 'glass' feel */
+    backdrop-filter: blur(15px);
+    /* Strong blur on background */
+    -webkit-backdrop-filter: blur(15px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modal {
+    background: rgba(30, 30, 35, 0.96);
+    /* Much more opaque, almost solid */
+    backdrop-filter: blur(50px);
+    /* Heavy blur to hide content behind */
+    -webkit-backdrop-filter: blur(50px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    width: 100%;
+    max-width: 950px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.header {
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.headerTitle {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.closeButton {
+    background: rgba(255, 255, 255, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.closeButton:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .body {
+        flex-direction: row;
+        height: 600px;
+    }
+}
+
+.imageSection {
+    flex: 1.2;
+    background-color: #fff;
+    /* Keep image bg white for clarity */
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.imageWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.image {
+    object-fit: contain;
+}
+
+.infoSection {
+    flex: 1;
+    padding: 2.5rem;
+    color: #f5f5f7;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.productName {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stars {
+    display: flex;
+    color: #ff9f0a;
+    /* iOS Orange */
+    gap: 3px;
+}
+
+.ratingValue {
+    color: #86868b;
+    font-size: 0.95rem;
+}
+
+.priceWrapper {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.25rem;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: baseline;
+}
+
+.price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ff9f0a;
+}
+
+.currency {
+    font-size: 1.1rem;
+    color: #86868b;
+    margin-left: 0.5rem;
+    font-weight: 500;
+}
+
+.description h4,
+.paymentMethods h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #fff;
+}
+
+.description p {
+    font-size: 0.95rem;
+    color: #a1a1a6;
+    line-height: 1.6;
+}
+
+.stockStatus {
+    background: rgba(50, 215, 75, 0.1);
+    /* Translucent Green */
+    color: #32d74b;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    align-self: flex-start;
+}
+
+.stockDot {
+    font-size: 0.6rem;
+}
+
+.methodsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.8rem;
+}
+
+.methodCard {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    color: #d1d1d6;
+    text-align: center;
+}
+
+.addToCartButton {
+    margin-top: auto;
+    background: #ff9f0a;
+    color: #fff;
+    padding: 1.1rem;
+    border-radius: 18px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(255, 159, 10, 0.3);
+}
+
+.addToCartButton:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 30px rgba(255, 159, 10, 0.5);
+}
