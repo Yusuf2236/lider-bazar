@@ -1,8 +1,8 @@
-
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { sendTelegramMessage } from "@/lib/telegram";
 
 export const dynamic = 'force-dynamic';
 
@@ -47,10 +47,6 @@ export async function GET(req: Request) {
     }
 }
 
-import { sendTelegramMessage } from "@/lib/telegram";
-
-// ... existing imports ...
-
 export async function POST(req: Request) {
     try {
         const session = await getServerSession(authOptions);
@@ -69,7 +65,7 @@ export async function POST(req: Request) {
         const order: any = await (prisma as any).order.create({
             data: {
                 userId: (session.user as any).id,
-                total,
+                total: Math.round(total),
                 address,
                 phone,
                 location,
@@ -79,7 +75,7 @@ export async function POST(req: Request) {
                     create: items.map((item: any) => ({
                         productId: item.id,
                         quantity: item.quantity,
-                        price: item.price
+                        price: Math.round(item.price)
                     }))
                 }
             },
@@ -89,7 +85,8 @@ export async function POST(req: Request) {
         });
 
         // Send Telegram Notification
-        const message = `
+        try {
+            const message = `
 📦 <b>New Order Received!</b>
 
 🆔 Order ID: #${order.id.slice(-6).toUpperCase()}
@@ -101,11 +98,15 @@ export async function POST(req: Request) {
 
 <a href="https://lider-bazar.vercel.app/admin/orders">View Order</a>
 `;
-        await sendTelegramMessage(message);
+            await sendTelegramMessage(message);
+        } catch (tgError) {
+            console.error("[TELEGRAM_ERROR]", tgError);
+        }
 
         return NextResponse.json(order);
-    } catch (error) {
-        console.log("[ORDERS_POST]", error);
-        return new NextResponse("Internal Error", { status: 500 });
+    } catch (error: any) {
+        console.error("[ORDERS_POST_ERROR]", error);
+        // Include error message for debugging
+        return new NextResponse(`Order creation failed: ${error.message || 'Unknown error'}`, { status: 500 });
     }
 }

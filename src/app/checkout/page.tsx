@@ -83,7 +83,8 @@ export default function CheckoutPage() {
                 clearCart();
                 router.push('/profile'); // Redirect to order history
             } else {
-                alert('Failed to place order.');
+                const errorText = await res.text();
+                alert(`Error: ${errorText || 'Failed to place order.'}`);
             }
         } catch (error) {
             console.error(error);
