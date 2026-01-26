@@ -1,4 +1,5 @@
-admin
+# Admin is part of the app now
+# admin 
 .next
 node_modules
 .vercel

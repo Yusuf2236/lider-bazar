@@ -1,0 +1,110 @@
+.inventory {
+    padding: 2rem;
+}
+
+.header {
+    margin-bottom: 2rem;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.highlight {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    color: var(--gray-400);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.card {
+    padding: 1.5rem;
+    border-radius: 20px;
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.cardHeader svg {
+    font-size: 1.5rem;
+    color: var(--primary-orange);
+}
+
+.activityList {
+    list-style: none;
+    padding: 0;
+}
+
+.activityList li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--gray-300);
+    font-size: 0.9rem;
+}
+
+.mainSection {
+    padding: 2rem;
+    border-radius: 24px;
+}
+
+.sectionHeader {
+    margin-bottom: 2rem;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    text-align: left;
+    color: var(--gray-400);
+    padding: 1rem;
+    border-bottom: 2px solid var(--glass-border);
+}
+
+.table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+    vertical-align: middle;
+}
+
+.restockBtn {
+    background: var(--primary-orange);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.statusOk {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
