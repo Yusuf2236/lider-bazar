@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
     try {
         const { name, email, password } = await req.json();
@@ -11,7 +13,7 @@ export async function POST(req: Request) {
             return new NextResponse("Missing fields", { status: 400 });
         }
 
-        const exists = await prisma.user.findUnique({
+        const exists = await (prisma as any).user.findUnique({
             where: {
                 email,
             },
@@ -23,11 +25,12 @@ export async function POST(req: Request) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const user = await prisma.user.create({
+        const user = await (prisma as any).user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
+                role: "USER"
             },
         });
 
