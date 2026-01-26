@@ -74,7 +74,18 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
 
                         <div className={styles.description}>
                             <h4>{t.modal.description}</h4>
-                            <p>Handcrafted quality product with natural ingredients. Perfect for your daily needs.</p>
+                            <p>{product.description || t.modal.defaultDescription}</p>
+
+                            {product.specs && (
+                                <div className={styles.specsContainer}>
+                                    {Object.entries(product.specs).map(([key, value]) => (
+                                        <div key={key} className={styles.specRow}>
+                                            <span className={styles.specKey}>{key}:</span>
+                                            <span className={styles.specValue}>{value}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         <div className={styles.stockStatus}>

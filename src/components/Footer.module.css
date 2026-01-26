@@ -12,3 +12,11 @@
     text-align: center;
     color: var(--gray-800);
 }
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 1.5rem 0;
+        margin-bottom: 60px;
+        /* Space for mobile nav if added later, or just visual breathing room */
+    }
+}

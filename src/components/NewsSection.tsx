@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from './NewsSection.module.css';
-import { news } from '@/lib/data';
+// import { news } from '@/lib/data';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function NewsSection() {
@@ -13,7 +13,7 @@ export default function NewsSection() {
             <div className={styles.container}>
                 <h2 className={styles.title}>{t.news.title}</h2>
                 <div className={styles.grid}>
-                    {news.map((item) => (
+                    {t.newsItems.map((item) => (
                         <div key={item.id} className={styles.card}>
                             <div className={styles.imageWrapper}>
                                 <Image
@@ -23,6 +23,14 @@ export default function NewsSection() {
                                     className={styles.image}
                                     unoptimized
                                 />
+                                {item.badge && (
+                                    <span
+                                        className={styles.badge}
+                                        style={{ backgroundColor: item.badgeColor || 'var(--primary-orange)' }}
+                                    >
+                                        {item.badge}
+                                    </span>
+                                )}
                             </div>
                             <div className={styles.content}>
                                 <span className={styles.date}>{item.date}</span>

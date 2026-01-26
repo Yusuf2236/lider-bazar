@@ -1,0 +1,133 @@
+.checkoutContainer {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .checkoutContainer {
+        grid-template-columns: 1fr;
+    }
+}
+
+.summary {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 20px;
+    height: fit-content;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.itemRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+    font-size: 0.95rem;
+}
+
+.total {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 2px solid rgba(128, 128, 128, 0.1);
+    display: flex;
+    justify-content: space-between;
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--primary-orange);
+}
+
+.form {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.field {
+    margin-bottom: 1.5rem;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.input,
+.textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 1rem;
+    color: var(--foreground);
+}
+
+.textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.locationSection {
+    margin-bottom: 2rem;
+}
+
+.locationBtn {
+    width: 100%;
+    padding: 0.8rem;
+    background: rgba(229, 94, 22, 0.1);
+    color: var(--primary-orange);
+    border-radius: 12px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.locationBtn:hover {
+    background: rgba(229, 94, 22, 0.2);
+}
+
+.mapPreview {
+    margin-top: 1rem;
+}
+
+.coordText {
+    font-size: 0.8rem;
+    color: var(--gray-400);
+    margin-bottom: 0.5rem;
+}
+
+.submitBtn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary-orange);
+    color: white;
+    font-weight: 700;
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+}
+
+.submitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(229, 94, 22, 0.3);
+}
+
+.empty {
+    text-align: center;
+    padding: 4rem;
+    color: var(--gray-400);
+    font-size: 1.2rem;
+}

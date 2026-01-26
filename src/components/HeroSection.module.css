@@ -8,29 +8,60 @@
 }
 
 .titleContainer {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
 .heroTitle {
-    font-size: 3rem;
+    font-size: 4.5rem;
     font-weight: 800;
     color: var(--foreground);
-    margin-bottom: 1rem;
-    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
 }
 
 .brandName {
     color: var(--primary-orange);
+    display: inline-block;
+    animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.4s forwards;
+    opacity: 0;
+    transform: scale(0.8);
 }
 
 .heroSubtitle {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     color: var(--gray-400);
-    /* Slightly lighter gray as per screenshot */
     line-height: 1.6;
-    max-width: 600px;
+    max-width: 800px;
     margin: 0 auto;
+    animation: fadeInUp 0.8s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .discountSection {
@@ -81,4 +112,19 @@
     min-width: 300px;
     /* Slightly wider cards as per design */
     max-width: 300px;
+}
+
+@media (max-width: 768px) {
+    .heroBanner {
+        padding: 8rem 1rem 4rem 1rem;
+    }
+
+    .heroTitle {
+        font-size: 2.5rem;
+    }
+
+    .heroSubtitle {
+        font-size: 1.1rem;
+        max-width: 100%;
+    }
 }

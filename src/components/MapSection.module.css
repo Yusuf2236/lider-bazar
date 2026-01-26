@@ -1,0 +1,67 @@
+.section {
+    padding: 4rem 1rem;
+    position: relative;
+    z-index: 10;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--gray-300, #ccc);
+}
+
+.mapWrapper {
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform: perspective(1000px) rotateX(1deg);
+    transition: transform 0.5s ease;
+}
+
+.mapWrapper:hover {
+    transform: perspective(1000px) rotateX(0deg) scale(1.01);
+}
+
+.map {
+    display: block;
+    filter: grayscale(0.2) contrast(1.1);
+    height: 400px;
+    /* Reduced from 450px default */
+}
+
+@media (max-width: 768px) {
+    .map {
+        height: 250px;
+        /* Much smaller for mobile */
+    }
+
+    .section {
+        padding: 2rem 1rem;
+    }
+
+    .title {
+        font-size: 1.8rem;
+    }
+}

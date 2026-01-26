@@ -2,3 +2,10 @@ admin
 .next
 node_modules
 .vercel
+.env
+/src/generated/prisma
+*.db
+*.db-journal
+*.log
+.DS_Store
+

@@ -1,10 +1,14 @@
 .main {
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
+
+/* Background handled in globals.css */
 
 .ctaSection {
   padding: 2rem 0;
-  background-color: var(--gray-100);
+  /* background-color: var(--gray-100); Removed to let background show */
 }
 
 .container {

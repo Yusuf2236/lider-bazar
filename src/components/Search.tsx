@@ -1,22 +1,47 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import styles from './Search.module.css';
-import { products } from '@/lib/data';
 import { formatPrice } from '@/lib/utils';
 import { useLanguage } from '@/context/LanguageContext';
 import Link from 'next/link';
 import Image from 'next/image';
+import debounce from 'lodash/debounce';
 
 export default function Search() {
     const { t } = useLanguage();
     const [query, setQuery] = useState('');
+    const [results, setResults] = useState<any[]>([]);
     const [isFocused, setIsFocused] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const filteredProducts = products.filter((product) =>
-        product.name.toLowerCase().includes(query.toLowerCase())
+    // Create a debounced fetch function
+    const performSearch = useCallback(
+        debounce(async (searchQuery: string) => {
+            if (searchQuery.length < 2) {
+                setResults([]);
+                return;
+            }
+            setLoading(true);
+            try {
+                const res = await fetch(`/api/products?q=${encodeURIComponent(searchQuery)}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setResults(data);
+                }
+            } catch (error) {
+                console.error('Search failed', error);
+            } finally {
+                setLoading(false);
+            }
+        }, 300),
+        []
     );
+
+    useEffect(() => {
+        performSearch(query);
+    }, [query, performSearch]);
 
     return (
         <div className={styles.searchWrapper}>
@@ -37,8 +62,11 @@ export default function Search() {
 
             {isFocused && query.length > 0 && (
                 <div className={styles.suggestions}>
-                    {filteredProducts.length > 0 ? (
-                        filteredProducts.map((product) => (
+                    {loading ? (
+                        <div className={styles.noResults}>Searching...</div>
+                    ) : results.length > 0 ? (
+
+                        results.map((product) => (
                             <Link href={`/product/${product.id}`} key={product.id} className={styles.suggestionItem}>
                                 <div className={styles.imageWrapper}>
                                     <Image

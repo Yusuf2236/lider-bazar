@@ -12,19 +12,14 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-    const [locale, setLocale] = useState<Locale>(() => {
-        if (typeof window !== 'undefined') {
-            const savedLocale = localStorage.getItem('locale') as Locale;
-            if (savedLocale && ['uz', 'ru', 'en'].includes(savedLocale)) {
-                return savedLocale;
-            }
-        }
-        return 'uz';
-    });
+    const [locale, setLocale] = useState<Locale>('uz');
 
     useEffect(() => {
-        // This effect is now only for potential synchronization if needed, 
-        // but lazy init covers the initial load.
+        // Sync with localStorage on mount (Client-side only)
+        const savedLocale = localStorage.getItem('locale') as Locale;
+        if (savedLocale && ['uz', 'ru', 'en'].includes(savedLocale)) {
+            setLocale(savedLocale);
+        }
     }, []);
 
     const changeLocale = (newLocale: Locale) => {

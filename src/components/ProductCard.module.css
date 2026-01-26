@@ -86,17 +86,16 @@
     position: absolute;
     top: 1rem;
     left: 1rem;
-    /* iOS style often puts tags left */
     right: auto;
-    background: rgba(239, 68, 68, 0.1);
-    /* Translucent red */
+    background: rgba(239, 68, 68, 0.15);
     color: #ff3b30;
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    padding: 0.3rem 0.8rem;
+    padding: 0.5rem 1rem;
     border-radius: 20px;
     z-index: 10;
     backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
 }
 
 .content {

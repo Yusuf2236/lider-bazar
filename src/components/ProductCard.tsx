@@ -23,10 +23,37 @@ export default function ProductCard({ product }: { product: Product }) {
         addToast(`${product.name} added to cart!`);
     };
 
-    const toggleWishlist = (e: React.MouseEvent) => {
+    const toggleWishlist = async (e: React.MouseEvent) => {
         e.stopPropagation();
+        // Optimistic update
         setIsWishlisted(!isWishlisted);
-        addToast(isWishlisted ? 'Removed from Wishlist' : 'Added to Wishlist', 'info');
+
+        try {
+            const method = !isWishlisted ? 'POST' : 'DELETE';
+            const body = !isWishlisted ? JSON.stringify({ productId: product.id }) : undefined;
+            const url = !isWishlisted ? '/api/wishlist' : `/api/wishlist?productId=${product.id}`;
+
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body
+            });
+
+            if (!res.ok) {
+                if (res.status === 401) {
+                    addToast('Please login to use wishlist', 'error');
+                } else {
+                    addToast('Failed to update wishlist', 'error');
+                }
+                // Revert on failure
+                setIsWishlisted(isWishlisted);
+            } else {
+                addToast(!isWishlisted ? 'Added to Wishlist' : 'Removed from Wishlist', 'info');
+            }
+        } catch (error) {
+            console.error(error);
+            setIsWishlisted(isWishlisted);
+        }
     };
 
     return (

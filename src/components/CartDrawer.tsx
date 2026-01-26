@@ -13,30 +13,17 @@ interface CartDrawerProps {
     onClose: () => void;
 }
 
+import { useRouter } from 'next/navigation';
+
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     const { cart, removeFromCart, updateQuantity, totalPrice } = useCart();
     const { t } = useLanguage();
+    const router = useRouter();
 
     const handleCheckout = () => {
         if (cart.length === 0) return;
-
-        const newOrder = {
-            id: `#${Math.floor(1000 + Math.random() * 9000)}`,
-            customer: 'Yusuf (Mijoz)',
-            date: new Date().toLocaleString(),
-            total: totalPrice,
-            status: 'Yangi',
-            items: cart.length
-        };
-
-        // Simulate "Database" update for Admin Panel
-        const existingOrders = JSON.parse(localStorage.getItem('admin_orders') || '[]');
-        localStorage.setItem('admin_orders', JSON.stringify([newOrder, ...existingOrders]));
-
-        alert('Buyurtmangiz muvaffaqiyatli qabul qilindi! Admin panelda ko\'rishingiz mumkin.');
         onClose();
-        // Clear cart after checkout
-        cart.forEach(item => removeFromCart(item.id));
+        router.push('/checkout');
     };
 
     if (!isOpen) return null;
