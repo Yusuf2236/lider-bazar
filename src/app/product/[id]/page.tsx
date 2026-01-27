@@ -147,87 +147,118 @@ export default function ProductPage() {
                 </motion.div>
             </div>
 
-            {/* Related Products */}
-            {related.length > 0 && (
-                <div style={{ marginTop: '4rem' }}>
-                    <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>You may also like</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
-                        {related.map((p) => (
-                            <Link href={`/product/${p.id}`} key={p.id} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <div style={{ background: 'var(--card-bg)', borderRadius: '20px', overflow: 'hidden', border: '1px solid var(--border)', height: '100%' }}>
-                                    <div style={{ position: 'relative', height: '200px' }}>
-                                        <Image src={p.image} alt={p.name} fill style={{ objectFit: 'cover' }} />
-                                    </div>
-                                    <div style={{ padding: '1rem' }}>
-                                        <h4 style={{ fontWeight: '600', marginBottom: '0.5rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</h4>
-                                        <div style={{ color: '#FF9F0A', fontWeight: 'bold' }}>{formatPrice(p.price)}</div>
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-            )}
+            {/* Schema.org for SEO */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Product",
+                        "name": product.name,
+                        "image": product.image,
+                        "description": product.description || `Buy ${product.name} at Lider Bazar`,
+                        "sku": product.id,
+                        "offers": {
+                            "@type": "Offer",
+                            "url": typeof window !== 'undefined' ? window.location.href : '',
+                            "priceCurrency": "UZS",
+                            "price": product.price,
+                            "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+                            "itemCondition": "https://schema.org/NewCondition"
+                        },
+                        "aggregateRating": product.reviews.length > 0 ? {
+                            "@type": "AggregateRating",
+                            "ratingValue": product.reviews.reduce((acc: number, r: any) => acc + r.rating, 0) / product.reviews.length,
+                            "reviewCount": product.reviews.length
+                        } : undefined
+                    })
+                }}
+            />
+        </div>
 
-            {/* Reviews Section */}
+            {/* Related Products */ }
+    {
+        related.length > 0 && (
             <div style={{ marginTop: '4rem' }}>
-                <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>Reviews ({product.reviews.length})</h2>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '3rem' }}>
-                    {/* Write Review */}
-                    <div style={{ background: 'var(--card-bg)', padding: '2rem', borderRadius: '24px', height: 'fit-content' }}>
-                        <h3 style={{ marginBottom: '1rem' }}>Write a Review</h3>
-                        <form onSubmit={submitReview}>
-                            <div style={{ marginBottom: '1rem' }}>
-                                <label style={{ display: 'block', marginBottom: '0.5rem' }}>Rating</label>
-                                <div style={{ display: 'flex', gap: '0.5rem', color: '#FF9F0A', fontSize: '1.5rem', cursor: 'pointer' }}>
-                                    {[1, 2, 3, 4, 5].map(star => (
-                                        <FaStar key={star} onClick={() => setRating(star)} style={{ opacity: star <= rating ? 1 : 0.3 }} />
-                                    ))}
+                <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>You may also like</h2>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
+                    {related.map((p) => (
+                        <Link href={`/product/${p.id}`} key={p.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <div style={{ background: 'var(--card-bg)', borderRadius: '20px', overflow: 'hidden', border: '1px solid var(--border)', height: '100%' }}>
+                                <div style={{ position: 'relative', height: '200px' }}>
+                                    <Image src={p.image} alt={p.name} fill style={{ objectFit: 'cover' }} />
+                                </div>
+                                <div style={{ padding: '1rem' }}>
+                                    <h4 style={{ fontWeight: '600', marginBottom: '0.5rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</h4>
+                                    <div style={{ color: '#FF9F0A', fontWeight: 'bold' }}>{formatPrice(p.price)}</div>
                                 </div>
                             </div>
-                            <textarea
-                                required
-                                value={comment}
-                                onChange={e => setComment(e.target.value)}
-                                placeholder="Share your thoughts..."
-                                style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', color: '#fff', minHeight: '100px', marginBottom: '1rem' }}
-                            />
-                            <button type="submit" disabled={submitting} style={{ width: '100%', padding: '1rem', background: '#FF9F0A', borderRadius: '12px', border: 'none', color: '#fff', fontWeight: 'bold', cursor: 'pointer', opacity: submitting ? 0.7 : 1 }}>
-                                {submitting ? 'Submitting...' : 'Post Review'}
-                            </button>
-                        </form>
-                    </div>
-
-                    {/* Review List */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                        {product.reviews.map((review: any) => (
-                            <div key={review.id} style={{ background: 'var(--card-bg)', padding: '1.5rem', borderRadius: '20px', border: '1px solid var(--border)' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#333', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                                            {review.user.image ? <Image src={review.user.image} alt={review.user.name} width={40} height={40} /> : <FaUser />}
-                                        </div>
-                                        <div>
-                                            <div style={{ fontWeight: '600' }}>{review.user.name}</div>
-                                            <div style={{ fontSize: '0.8rem', color: '#888' }}>{new Date(review.createdAt).toLocaleDateString()}</div>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: 'flex', color: '#FF9F0A' }}>
-                                        {[...Array(5)].map((_, i) => (
-                                            <FaStar key={i} style={{ opacity: i < review.rating ? 1 : 0.3 }} />
-                                        ))}
-                                    </div>
-                                </div>
-                                <p style={{ color: '#ccc', lineHeight: '1.5' }}>{review.comment}</p>
-                            </div>
-                        ))}
-                        {product.reviews.length === 0 && (
-                            <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}>No reviews yet. Be the first!</div>
-                        )}
-                    </div>
+                        </Link>
+                    ))}
                 </div>
             </div>
+        )
+    }
+
+    {/* Reviews Section */ }
+    <div style={{ marginTop: '4rem' }}>
+        <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>Reviews ({product.reviews.length})</h2>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '3rem' }}>
+            {/* Write Review */}
+            <div style={{ background: 'var(--card-bg)', padding: '2rem', borderRadius: '24px', height: 'fit-content' }}>
+                <h3 style={{ marginBottom: '1rem' }}>Write a Review</h3>
+                <form onSubmit={submitReview}>
+                    <div style={{ marginBottom: '1rem' }}>
+                        <label style={{ display: 'block', marginBottom: '0.5rem' }}>Rating</label>
+                        <div style={{ display: 'flex', gap: '0.5rem', color: '#FF9F0A', fontSize: '1.5rem', cursor: 'pointer' }}>
+                            {[1, 2, 3, 4, 5].map(star => (
+                                <FaStar key={star} onClick={() => setRating(star)} style={{ opacity: star <= rating ? 1 : 0.3 }} />
+                            ))}
+                        </div>
+                    </div>
+                    <textarea
+                        required
+                        value={comment}
+                        onChange={e => setComment(e.target.value)}
+                        placeholder="Share your thoughts..."
+                        style={{ width: '100%', padding: '1rem', borderRadius: '12px', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', color: '#fff', minHeight: '100px', marginBottom: '1rem' }}
+                    />
+                    <button type="submit" disabled={submitting} style={{ width: '100%', padding: '1rem', background: '#FF9F0A', borderRadius: '12px', border: 'none', color: '#fff', fontWeight: 'bold', cursor: 'pointer', opacity: submitting ? 0.7 : 1 }}>
+                        {submitting ? 'Submitting...' : 'Post Review'}
+                    </button>
+                </form>
+            </div>
+
+            {/* Review List */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {product.reviews.map((review: any) => (
+                    <div key={review.id} style={{ background: 'var(--card-bg)', padding: '1.5rem', borderRadius: '20px', border: '1px solid var(--border)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#333', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                                    {review.user.image ? <Image src={review.user.image} alt={review.user.name} width={40} height={40} /> : <FaUser />}
+                                </div>
+                                <div>
+                                    <div style={{ fontWeight: '600' }}>{review.user.name}</div>
+                                    <div style={{ fontSize: '0.8rem', color: '#888' }}>{new Date(review.createdAt).toLocaleDateString()}</div>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', color: '#FF9F0A' }}>
+                                {[...Array(5)].map((_, i) => (
+                                    <FaStar key={i} style={{ opacity: i < review.rating ? 1 : 0.3 }} />
+                                ))}
+                            </div>
+                        </div>
+                        <p style={{ color: '#ccc', lineHeight: '1.5' }}>{review.comment}</p>
+                    </div>
+                ))}
+                {product.reviews.length === 0 && (
+                    <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}>No reviews yet. Be the first!</div>
+                )}
+            </div>
         </div>
+    </div>
+        </div >
     );
 }

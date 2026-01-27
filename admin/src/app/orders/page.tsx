@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { getOrders } from './actions';
 import { FaEye, FaCheck, FaTimes, FaTruck, FaFilter, FaSearch } from 'react-icons/fa';
 import styles from './orders.module.css';
 
@@ -12,21 +13,20 @@ const defaultOrders = [
 ];
 
 export default function AdminOrders() {
-    const [orders, setOrders] = useState(defaultOrders);
+    const [orders, setOrders] = useState<any[]>([]);
 
     useEffect(() => {
-        // Real and Mock sync logic
-        const fetchOrders = () => {
-            const realOrders = JSON.parse(localStorage.getItem('admin_orders') || '[]');
-            if (realOrders.length > 0) {
-                setOrders([...realOrders, ...defaultOrders]);
-            } else {
-                setOrders(defaultOrders); // If no real orders, use default
+        const fetchOrders = async () => {
+            try {
+                const fetchedOrders = await getOrders();
+                setOrders(fetchedOrders);
+            } catch (error) {
+                console.error('Error fetching orders:', error);
             }
         };
 
         fetchOrders();
-        // Refresh every 5 seconds for simulation
+        // Refresh every 5 seconds
         const interval = setInterval(fetchOrders, 5000);
         return () => clearInterval(interval);
     }, []);

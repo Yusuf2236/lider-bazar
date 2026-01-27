@@ -144,3 +144,11 @@
     color: #ff453a;
     font-size: 1.1rem;
 }
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

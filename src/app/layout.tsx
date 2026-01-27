@@ -9,6 +9,7 @@ import { ToastProvider } from '@/context/ToastContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import FloatingActions from '@/components/FloatingActions';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 // const inter = Inter({ subsets: ['latin'] });
 
@@ -45,13 +46,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="uz">
-      <body style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+    <html lang="uz" suppressHydrationWarning>
+      <body style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }} suppressHydrationWarning>
         <ThemeProvider>
           <SessionProvider>
             <LanguageProvider>
               <ToastProvider>
                 <CartProvider>
+                  <GoogleAnalytics />
                   <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
                     <Header />
                     <main style={{ flex: 1 }}>{children}</main>

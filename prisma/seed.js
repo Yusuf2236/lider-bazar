@@ -1,34 +1,8 @@
-export interface Product {
-    id: string;
-    name: string;
-    price: number;
-    oldPrice?: number;
-    image: string;
-    category: string;
-    rating: number;
-    isNew?: boolean;
-    description?: string;
-    specs?: { [key: string]: string };
-}
 
-export interface News {
-    id: string;
-    title: string;
-    excerpt: string;
-    date: string;
-    image: string;
-    badge?: string;
-    badgeColor?: string;
-}
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
-export interface Category {
-    id: string;
-    name: string;
-    image: string;
-    slug: string;
-}
-
-export const categories: Category[] = [
+const categories = [
     { id: '1', name: 'Baby Diapers', image: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=400', slug: 'baby-diapers' },
     { id: '2', name: 'Drinks', image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=400', slug: 'drinks' },
     { id: '3', name: 'Bread Products', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=400', slug: 'bread' },
@@ -37,7 +11,7 @@ export const categories: Category[] = [
     { id: '6', name: 'Fruits', image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=400', slug: 'fruits' },
 ];
 
-export const products: Product[] = [
+const products = [
     // Baby Diapers
     { id: 'bd1', name: 'Pampers Premium Care 1', price: 180000, oldPrice: 200000, image: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&q=80&w=600', category: 'Baby Diapers', rating: 4.9, isNew: true, description: 'Softest comfort and best skin protection from Pampers. 5-star skin protection.', specs: { 'Size': '1 (Newborn)', 'Count': '80 pcs', 'Origin': 'Poland' } },
     { id: 'bd2', name: 'Huggies Elite Soft 2', price: 195000, image: 'https://images.unsplash.com/photo-1558230559-679ce681ff57?auto=format&fit=crop&q=80&w=600', category: 'Baby Diapers', rating: 4.8, description: 'Contains 100% organic cotton. Hypoallergenic and breathable.', specs: { 'Size': '2 (3-6kg)', 'Count': '66 pcs', 'Origin': 'Russia' } },
@@ -99,27 +73,79 @@ export const products: Product[] = [
     // Fruits
     { id: 'fr1', name: 'Fresh Bananas', price: 15000, image: 'https://images.unsplash.com/photo-1571771894821-ad9958a3f747?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.8, description: 'Sweet and ripe yellow bananas.' },
     { id: 'fr2', name: 'Red Apples', price: 12000, image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.7, description: 'Crispy and sweet red apples.' },
-    { id: 'fr3', name: 'Green Grapes', price: 25000, image: 'https://images.unsplash.com/photo-1537640538966-79f369b41f8f?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.9, description: 'Seedless sweet green grapes.' },
-    { id: 'fr4', name: 'Juicy Oranges', price: 20000, image: 'https://images.unsplash.com/photo-1547514701-42782101795e?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.6, description: 'Fresh sun-ripened oranges.' },
 ];
 
-export const news: News[] = [
-    {
-        id: '1',
-        title: 'Yangi iPhone 15 endi sotuvda!',
-        excerpt: 'Lider Bazar do\'konlarida yangi iPhone 15 modellari eng yaxshi narxlarda.',
-        date: '2024-01-20',
-        image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&q=80&w=800',
-        badge: 'New Arrival',
-        badgeColor: '#fbbf24', // Amber/Gold
-    },
-    {
-        id: '2',
-        title: 'Katta chegirmalar boshlandi',
-        excerpt: 'Barcha maishiy texnikalar uchun 20% gacha chegirmalar.',
-        date: '2024-01-18',
-        image: 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?auto=format&fit=crop&q=80&w=800',
-        badge: 'Big Sale',
-        badgeColor: '#ef4444', // Red
-    },
-];
+async function main() {
+    console.log('Seeding database...');
+
+    for (const cat of categories) {
+        await prisma.category.upsert({
+            where: { slug: cat.slug },
+            update: {
+                name: cat.name,
+                image: cat.image
+            },
+            create: {
+                id: cat.id,
+                name: cat.name,
+                image: cat.image,
+                slug: cat.slug
+            }
+        });
+        console.log(`Synced category: ${cat.name}`);
+    }
+
+    for (const product of products) {
+        // Need to find category ID by name essentially, or we assumed IDs match.
+        // In data.ts we don't have cat ID in product, but we have category name.
+        // In this seed script, let's look up category by name to get the ID.
+        // Oh wait, products in data.ts have `category: 'Baby Diapers'`, matching category name.
+
+        const category = categories.find(c => c.name === product.category);
+        if (!category) {
+            console.warn(`Category not found for product ${product.name}: ${product.category}`);
+            continue;
+        }
+
+        await prisma.product.upsert({
+            where: { id: product.id },
+            update: {
+                name: product.name,
+                price: product.price,
+                oldPrice: product.oldPrice,
+                image: product.image,
+                description: product.description,
+                rating: product.rating,
+                isNew: product.isNew,
+                stock: 100, // Default stock
+                categoryId: category.id,
+                specs: product.specs ? JSON.stringify(product.specs) : null
+            },
+            create: {
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                oldPrice: product.oldPrice,
+                image: product.image,
+                description: product.description,
+                rating: product.rating,
+                isNew: product.isNew,
+                stock: 100, // Default stock
+                categoryId: category.id,
+                specs: product.specs ? JSON.stringify(product.specs) : null
+            }
+        });
+        console.log(`Synced product: ${product.name}`);
+    }
+
+    console.log('Seeding completed.');
+}
+
+main()
+    .catch((e) => {
+        console.error(e);
+        process.exit(1);
+    })
+    .finally(async () => {
+        await prisma.$disconnect();
+    });

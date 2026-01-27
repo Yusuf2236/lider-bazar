@@ -14,11 +14,21 @@ import { useLanguage } from '@/context/LanguageContext';
 
 export default function CheckoutPage() {
     const { cart, cartTotal, clearCart } = useCart();
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const { t } = useLanguage(); // Translation hook
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [detectingLocation, setDetectingLocation] = useState(false);
+
+    React.useEffect(() => {
+        if (status === 'unauthenticated') {
+            router.push('/login?callbackUrl=/checkout');
+        }
+    }, [status, router]);
+
+    if (status === 'loading') {
+        return <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}><FaSpinner className="spin" size={40} /></div>;
+    }
 
     const [formData, setFormData] = useState({
         address: '',

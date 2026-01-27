@@ -32,7 +32,7 @@ export const authOptions: AuthOptions = {
                 if (!credentials?.email || !credentials?.password) {
                     return null
                 }
-                const user = await (prisma as any).user.findUnique({
+                const user = await prisma.user.findUnique({
                     where: { email: credentials.email }
                 })
                 if (!user || !user.password) {
@@ -59,7 +59,7 @@ export const authOptions: AuthOptions = {
     callbacks: {
         async session({ session, token }) {
             if (session.user && token.sub) {
-                // @ts-ignore
+                // @ts-expect-error NextAuth session user id type mismatch
                 session.user.id = token.sub;
             }
             return session

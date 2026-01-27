@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { sendTelegramMessage } from "@/lib/telegram";
+import { createYesPosOrder } from "@/lib/yespos";
 
 export const dynamic = 'force-dynamic';
 
@@ -62,7 +63,7 @@ export async function POST(req: Request) {
             return new NextResponse("No items in order", { status: 400 });
         }
 
-        const order: any = await (prisma as any).order.create({
+        const order = await prisma.order.create({
             data: {
                 userId: (session.user as any).id,
                 total: Math.round(total),
@@ -80,7 +81,8 @@ export async function POST(req: Request) {
                 }
             },
             include: {
-                user: { select: { name: true, email: true } }
+                user: { select: { name: true, email: true } },
+                items: true
             }
         });
 
@@ -103,10 +105,17 @@ export async function POST(req: Request) {
             console.error("[TELEGRAM_ERROR]", tgError);
         }
 
+        // Send to YesPos
+        try {
+            await createYesPosOrder(order);
+        } catch (ypError) {
+            console.error("[YESPOS_ERROR]", ypError);
+        }
+
         return NextResponse.json(order);
     } catch (error: any) {
-        console.error("[ORDERS_POST_ERROR]", error);
-        // Include error message for debugging
+        console.error("[ORDERS_POST_ERROR] Detailed error:", error);
         return new NextResponse(`Order creation failed: ${error.message || 'Unknown error'}`, { status: 500 });
     }
 }
+

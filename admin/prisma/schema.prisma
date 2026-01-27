@@ -3,11 +3,11 @@
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
   provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -99,6 +99,7 @@ model Order {
   address   String?     // Full text address for delivery
   location  String?     // Coordinates for map location (lat,lng)
   phone     String?     // Contact number for delivery
+  paymentMethod String  @default("cash") // cash, card
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 }
