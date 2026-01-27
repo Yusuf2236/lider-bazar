@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { Product, Category } from "@prisma/client";
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +17,7 @@ export async function GET() {
 
         // Map to ensure safer/cleaner response if needed, 
         // but passing raw prisma object is fine for now.
-        const formattedProducts = products.map((product) => ({
+        const formattedProducts = products.map((product: Product & { category: Category | null }) => ({
             id: product.id,
             name: product.name,
             category: product.category?.name || 'Uncategorized',

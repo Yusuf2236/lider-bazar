@@ -52,7 +52,8 @@ async function getStats() {
 }
 
 // Revalidate every minute to keep stats fresh without reload
-export const revalidate = 60;
+// export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
   const stats = await getStats();
@@ -67,7 +68,8 @@ export default async function AdminDashboard() {
           </div>
           {/* Server Components cannot have onClick handlers. We remove the refresh button or make it a Client Component wrapper. 
                 For simplicity, we'll remove it or make it just a link. Or we can keep it if we accept it won't work in server component, 
-                but actually simplest is to remove logic or use a client component for the header.
+                but actually simplest is to remove logic or 'use client';
+ component for the header.
                 We will remove the button logic for now to avoid error. */}
           <div className={styles.refreshBtn}>
             <FaSync /> <span style={{ fontSize: '0.9rem' }}>Auto-Sync</span>
@@ -121,7 +123,7 @@ export default async function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {stats.lowStockProducts.map(p => (
+                {stats.lowStockProducts.map((p: any) => (
                   <tr key={p.id}>
                     <td>{p.name}</td>
                     <td>{p.stock}</td>

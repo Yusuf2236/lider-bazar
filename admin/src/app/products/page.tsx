@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = 'force-dynamic';
 
 import { FaPlus, FaSearch, FaFilter, FaTrash, FaEdit, FaSync } from 'react-icons/fa';
 import styles from './products.module.css';

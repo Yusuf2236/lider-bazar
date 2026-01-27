@@ -20,7 +20,8 @@ async function getInventory() {
     return { products, recent, lowStock };
 }
 
-export const revalidate = 60;
+// export const revalidate = 60; // Removed for dynamic rendering
+export const dynamic = 'force-dynamic';
 
 export default async function InventoryPage() {
     const { products, recent, lowStock } = await getInventory();
@@ -39,7 +40,7 @@ export default async function InventoryPage() {
                         <h3>Recent Updates</h3>
                     </div>
                     <ul className={styles.activityList}>
-                        {recent.map(p => (
+                        {recent.map((p: any) => (
                             <li key={p.id} style={{ fontSize: '0.9rem', padding: '0.5rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                                 Stock: {p.name} ({p.stock})
                             </li>
@@ -61,7 +62,7 @@ export default async function InventoryPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {lowStock.slice(0, 3).map(p => (
+                            {lowStock.slice(0, 3).map((p: any) => (
                                 <tr key={p.id}>
                                     <td>{p.name}</td>
                                     <td style={{ color: 'var(--primary-orange)', fontWeight: 'bold' }}>{p.stock}</td>
@@ -91,7 +92,7 @@ export default async function InventoryPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {products.map(product => (
+                            {products.map((product: any) => (
                                 <tr key={product.id}>
                                     <td>{product.name}</td>
                                     <td>{product.category?.name || 'N/A'}</td>
