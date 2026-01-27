@@ -20,9 +20,13 @@ export default function Header() {
     const [mounted, setMounted] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // Close dropdown when clicking outside
+    // Set mounted state on client-side
     useEffect(() => {
         setMounted(true);
+    }, []);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setIsDropdownOpen(false);

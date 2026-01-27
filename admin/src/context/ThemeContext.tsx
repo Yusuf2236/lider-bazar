@@ -18,7 +18,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         // Check local storage or system preference
         const savedTheme = localStorage.getItem('theme') as Theme;
         if (savedTheme) {
-            setTheme(savedTheme);
+            setTheme(savedTheme); // eslint-disable-line react-hooks/set-state-in-effect
             document.documentElement.setAttribute('data-theme', savedTheme);
         } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
             setTheme('dark');

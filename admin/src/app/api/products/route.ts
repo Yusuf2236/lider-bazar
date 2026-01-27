@@ -22,7 +22,7 @@ export async function GET() {
             category: product.category?.name || 'Uncategorized',
             price: product.price,
             stock: product.stock,
-            status: product.stock > 0 ? 'In Stock' : 'Out of Stock',
+            status: product.stock > 0 ? 'InStock' : 'OutOfStock',
             image: product.image
         }));
 

@@ -18,7 +18,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         // Sync with localStorage on mount (Client-side only)
         const savedLocale = localStorage.getItem('locale') as Locale;
         if (savedLocale && ['uz', 'ru', 'en'].includes(savedLocale)) {
-            setLocale(savedLocale);
+            setLocale(savedLocale); // eslint-disable-line react-hooks/set-state-in-effect
         }
     }, []);
 

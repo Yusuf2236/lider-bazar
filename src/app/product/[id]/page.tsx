@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { FaStar, FaShoppingCart, FaHeart, FaRegHeart, FaCheckCircle, FaUser } from 'react-icons/fa';
+import { FaStar, FaShoppingCart, FaUser } from 'react-icons/fa';
 import { useCart } from '@/context/CartContext';
 import { useSession } from 'next-auth/react';
 import { useToast } from '@/context/ToastContext';
@@ -31,6 +31,7 @@ export default function ProductPage() {
 
     useEffect(() => {
         fetchProduct();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     const fetchProduct = async () => {

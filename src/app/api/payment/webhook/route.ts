@@ -15,17 +15,15 @@ export async function POST(req: Request) {
             // NOTE: We need to be careful matching YesPos Order ID vs Internal ID.
             // If we sent internal ID as 'order_id', we can look it up.
 
-            // Example update logic (commented out until we confirm ID mapping):
-            /*
+            // Update order status in database
             await prisma.order.update({
                 where: { id: order_id },
-                data: { 
+                data: {
                     status: 'COMPLETED',
                     paymentMethod: 'card' // Confirmed card payment
                 }
             });
-            */
-            console.log("Payment successful. Logic to update DB should go here.");
+            console.log(`Order ${order_id} marked as COMPLETED`);
         } else {
             console.log("Payment failed or cancelled.");
         }

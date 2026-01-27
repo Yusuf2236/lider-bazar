@@ -103,8 +103,8 @@ export default function ProductsPage() {
                                 <td>{product.price.toLocaleString()} so'm</td>
                                 <td className={styles.stockCell}>{product.stock}</td>
                                 <td>
-                                    <span className={`${styles.statusLabel} ${styles[product.status.replace(' ', '')]}`}>
-                                        {product.status}
+                                    <span className={`${styles.statusLabel} ${styles[product.status]}`}>
+                                        {product.status === 'InStock' ? 'In Stock' : 'Out of Stock'}
                                     </span>
                                 </td>
                                 <td className={styles.actions}>
