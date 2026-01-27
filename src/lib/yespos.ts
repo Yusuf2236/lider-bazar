@@ -1,10 +1,22 @@
 import axios from 'axios';
 
 export interface YesPosProduct {
-    product_id: number;
+    id: number;
+    category: number;
     name: string;
-    price: number;
-    image?: string;
+    sku: string;
+    image: string;
+    description: string;
+    price?: number; // Price might not be in the direct product list according to some docs
+}
+
+export interface YesPosCategory {
+    id: number;
+    parent: number;
+    name: string;
+    image: string;
+    description: string;
+    products: YesPosProduct[];
 }
 
 export async function getYesPosProducts(): Promise<YesPosProduct[]> {
@@ -17,27 +29,36 @@ export async function getYesPosProducts(): Promise<YesPosProduct[]> {
     }
 
     try {
-        // According to documentation, the request body is empty object
         const response = await axios.post(`${YESPOS_API_URL}/marketplace/products`, {}, {
             headers: {
-                'API-key': YESPOS_API_KEY,
+                'API-Key': YESPOS_API_KEY,
                 'AppName': 'YesPOS',
                 'Content-Type': 'application/json'
             }
         });
 
-        if (response.data && Array.isArray(response.data)) {
-            return response.data as YesPosProduct[];
-        } else if (response.data && response.data.data && Array.isArray(response.data.data)) {
-            // Sometimes APIs wrap lists in a 'data' property
-            return response.data.data as YesPosProduct[];
+        if (response.data && response.data.code === 0 && Array.isArray(response.data.data)) {
+            const categories = response.data.data as YesPosCategory[];
+            const allProducts: YesPosProduct[] = [];
+
+            categories.forEach(cat => {
+                if (cat.products && Array.isArray(cat.products)) {
+                    allProducts.push(...cat.products);
+                }
+            });
+
+            return allProducts;
         }
 
         console.warn("Unexpected YesPos product response structure:", response.data);
         return [];
 
     } catch (error: any) {
-        console.error("Failed to fetch YesPos products:", error.response?.data || error.message);
+        if (error.response?.data?.error?.includes("Har 1 daqiqada")) {
+            console.error("YesPos Rate Limit: Only 1 request per minute allowed.");
+        } else {
+            console.error("Failed to fetch YesPos products:", error.response?.data || error.message);
+        }
         return [];
     }
 }
@@ -79,17 +100,17 @@ export async function createYesPosOrder(orderData: any) {
             type: 1, // Order
             note: `Order from Website #${orderData.id?.slice(-6).toUpperCase() || 'N/A'}`,
             delivery_info: {
-                distance: 0, // Default or calculate if possible
-                delivery_fee: 0, // Default or calculate if possible
+                distance: 0,
+                delivery_fee: 0,
             },
             items: orderData.items.map((item: any) => ({
-                item: parseInt(item.productId) || 0, // Assuming productId is a number or convertible
+                item: parseInt(item.productId) || 0,
                 qty: item.quantity,
                 price: item.price
             })),
             payments: [
                 {
-                    payment_id: orderData.paymentMethod === 'card' ? 2 : 1, // 1=Cash, 2=Card (Example mapping)
+                    payment_id: 1, // Defaulting to Cash/1 as per example, or logic based on orderData.paymentMethod
                     value: orderData.total
                 }
             ]
@@ -97,7 +118,7 @@ export async function createYesPosOrder(orderData: any) {
 
         const response = await axios.post(`${YESPOS_API_URL}/marketplace/order`, payload, {
             headers: {
-                'API-key': YESPOS_API_KEY,
+                'API-Key': YESPOS_API_KEY,
                 'AppName': 'YesPOS',
                 'Content-Type': 'application/json'
             }
@@ -106,11 +127,8 @@ export async function createYesPosOrder(orderData: any) {
         console.log("YesPos Order Created:", response.data);
         return response.data;
 
-
     } catch (error: any) {
         console.error("Failed to create YesPos order:", error.response?.data || error.message);
-        // We do strictly throw here to avoid failing the main order creation if YesPos is down
-        // but we log it.
         return null;
     }
 }

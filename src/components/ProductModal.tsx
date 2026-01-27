@@ -7,6 +7,7 @@ import { Product } from '@/lib/data';
 import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { getLocalizedContent } from '@/lib/i18n-utils';
 import styles from './ProductModal.module.css';
 
 interface ProductModalProps {
@@ -17,7 +18,10 @@ interface ProductModalProps {
 
 export default function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
     const { addToCart } = useCart();
-    const { t } = useLanguage();
+    const { t, locale } = useLanguage();
+
+    const localizedName = getLocalizedContent(product, locale, 'name');
+    const localizedDescription = getLocalizedContent(product, locale, 'description');
 
     useEffect(() => {
         if (isOpen) {
@@ -47,7 +51,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                         <div className={styles.imageWrapper}>
                             <Image
                                 src={product.image}
-                                alt={product.name}
+                                alt={localizedName}
                                 fill
                                 className={styles.image}
                                 unoptimized
@@ -56,7 +60,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
                     </div>
 
                     <div className={styles.infoSection}>
-                        <h3 className={styles.productName}>{product.name}</h3>
+                        <h3 className={styles.productName}>{localizedName}</h3>
 
                         <div className={styles.rating}>
                             <div className={styles.stars}>
@@ -74,7 +78,7 @@ export default function ProductModal({ product, isOpen, onClose }: ProductModalP
 
                         <div className={styles.description}>
                             <h4>{t.modal.description}</h4>
-                            <p>{product.description || t.modal.defaultDescription}</p>
+                            <p>{localizedDescription || t.modal.defaultDescription}</p>
 
                             {product.specs && (
                                 <div className={styles.specsContainer}>

@@ -1,22 +1,23 @@
 .card {
     background: var(--card-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: var(--radius-lg);
     overflow: visible;
-    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
     flex-direction: column;
     position: relative;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-    /* Very subtle shadow */
     height: 100%;
 }
 
 .card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 40px rgba(229, 94, 22, 0.15);
+    /* Orange glow */
+    border-color: rgba(229, 94, 22, 0.3);
 }
 
 .imageLink {

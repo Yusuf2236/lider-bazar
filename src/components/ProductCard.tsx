@@ -2,11 +2,13 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Product } from '@/lib/data';
 import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { getLocalizedContent } from '@/lib/i18n-utils';
+import { motion, AnimatePresence } from 'framer-motion';
 import ProductModal from './ProductModal';
 import styles from './ProductCard.module.css';
 import { FaShoppingCart, FaHeart, FaRegHeart } from 'react-icons/fa';
@@ -14,18 +16,21 @@ import { FaShoppingCart, FaHeart, FaRegHeart } from 'react-icons/fa';
 export default function ProductCard({ product }: { product: Product }) {
     const { addToCart } = useCart();
     const { addToast } = useToast();
+    const { locale } = useLanguage();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isWishlisted, setIsWishlisted] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+
+    const localizedName = getLocalizedContent(product, locale, 'name');
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.stopPropagation();
         addToCart(product);
-        addToast(`${product.name} added to cart!`);
+        addToast(`${localizedName} added to cart!`);
     };
 
     const toggleWishlist = async (e: React.MouseEvent) => {
         e.stopPropagation();
-        // Optimistic update
         setIsWishlisted(!isWishlisted);
 
         try {
@@ -45,7 +50,6 @@ export default function ProductCard({ product }: { product: Product }) {
                 } else {
                     addToast('Failed to update wishlist', 'error');
                 }
-                // Revert on failure
                 setIsWishlisted(isWishlisted);
             } else {
                 addToast(!isWishlisted ? 'Added to Wishlist' : 'Removed from Wishlist', 'info');
@@ -58,7 +62,13 @@ export default function ProductCard({ product }: { product: Product }) {
 
     return (
         <>
-            <div className={styles.card}>
+            <motion.div
+                className={styles.card}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                whileHover={{ y: -8 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            >
                 <button
                     className={styles.wishlistButton}
                     onClick={toggleWishlist}
@@ -74,18 +84,24 @@ export default function ProductCard({ product }: { product: Product }) {
                 )}
                 <div className={styles.imageLink} onClick={() => setIsModalOpen(true)} style={{ cursor: 'pointer' }}>
                     <div className={styles.imageWrapper}>
-                        <Image
-                            src={product.image}
-                            alt={product.name}
-                            fill
-                            className={styles.image}
-                            unoptimized
-                        />
+                        <motion.div
+                            animate={isHovered ? { y: [-5, 5, -5] } : { y: 0 }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                            style={{ width: '100%', height: '100%', position: 'relative' }}
+                        >
+                            <Image
+                                src={product.image}
+                                alt={localizedName}
+                                fill
+                                className={styles.image}
+                                unoptimized
+                            />
+                        </motion.div>
                     </div>
                 </div>
                 <div className={styles.content}>
                     <div className={styles.title} onClick={() => setIsModalOpen(true)} style={{ cursor: 'pointer' }}>
-                        {product.name}
+                        {localizedName}
                     </div>
                     <div className={styles.rating}>
                         {'★'.repeat(Math.round(product.rating))}
@@ -96,16 +112,18 @@ export default function ProductCard({ product }: { product: Product }) {
                             {product.oldPrice && <span className={styles.oldPrice}>{formatPrice(product.oldPrice)}</span>}
                             <span className={styles.price}>{formatPrice(product.price)}</span>
                         </div>
-                        <button
+                        <motion.button
                             className={styles.addButton}
                             onClick={handleAddToCart}
                             aria-label="Savatchaga qo'shish"
+                            whileTap={{ scale: 0.9 }}
+                            whileHover={{ scale: 1.1, backgroundColor: 'var(--primary-orange)', color: 'white' }}
                         >
                             <FaShoppingCart />
-                        </button>
+                        </motion.button>
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
             <ProductModal
                 product={product}

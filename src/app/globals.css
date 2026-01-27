@@ -4,21 +4,20 @@
 
   /* Light Mode (Default) */
   --background: #f2f2f7;
-  --foreground: #1d1d1f;
+  --foreground: #000000;
+  /* Pure Black */
 
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  /* More opaque for stronger effect */
-  --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
 
-  --card-bg: rgba(255, 255, 255, 0.9);
-  /* Very slight transparency */
+  --card-bg: rgba(255, 255, 255, 0.65);
 
   --gray-50: #ffffff;
   --gray-100: #f5f5f7;
   --gray-200: #e5e7eb;
   --gray-400: #86868b;
-  --gray-800: #1d1d1f;
+  --gray-800: #000000;
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --radius-lg: 24px;
@@ -26,14 +25,14 @@
 
 [data-theme='dark'] {
   --background: #000000;
-  --foreground: #f5f5f7;
+  --foreground: #ffffff;
+  /* Pure White */
 
-  --glass-bg: rgba(28, 28, 30, 0.85);
-  /* Stronger dark glass */
-  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-bg: rgba(28, 28, 30, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
 
-  --card-bg: rgba(28, 28, 30, 0.85);
+  --card-bg: rgba(28, 28, 30, 0.6);
 
   --gray-50: #1c1c1e;
   --gray-100: #2c2c2e;
@@ -56,11 +55,7 @@ body {
 
   /* Static Image Background */
   background-color: var(--background);
-  /* Premium abstract sales background */
-  background-image: url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2029&auto=format&fit=crop');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  /* Background handled by AnimatedBackground component */
 
   color: var(--foreground);
   transition: color 0.3s ease;
@@ -69,11 +64,11 @@ body {
 }
 
 /* Dark mode override for background image - darker abstract */
+/* Dark mode override for background image - darker abstract */
 [data-theme='dark'] body {
-  background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
-  /* Ensure text is readable over image */
-  background-blend-mode: overlay;
-  background-color: rgba(0, 0, 0, 0.7);
+  /* Premium dark background matching user request */
+  background-color: #111111;
+  background-image: none;
 }
 
 a {

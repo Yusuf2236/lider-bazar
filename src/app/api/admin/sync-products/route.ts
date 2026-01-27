@@ -49,8 +49,8 @@ export async function POST() {
         let createdCount = 0;
 
         for (const item of products) {
-            // YesPos ID is a number, our Product ID is a String (CUID).
-            // Match by name for now.
+            const price = item.price || 0;
+
             const existingProduct = await prisma.product.findFirst({
                 where: { name: item.name }
             });
@@ -59,8 +59,9 @@ export async function POST() {
                 await prisma.product.update({
                     where: { id: existingProduct.id },
                     data: {
-                        price: item.price,
-                        image: item.image || existingProduct.image
+                        price: price,
+                        image: item.image || existingProduct.image,
+                        description: item.description || existingProduct.description
                     }
                 });
                 updatedCount++;
@@ -68,12 +69,15 @@ export async function POST() {
                 await prisma.product.create({
                     data: {
                         name: item.name,
-                        price: item.price,
+                        price: price,
                         image: item.image || "/placeholder.png",
                         categoryId: category.id,
-                        description: "Imported from YesPos",
-                        specs: JSON.stringify({ yespos_id: item.product_id }), // Store external ID in specs
-                        stock: 100 // Default stock
+                        description: item.description || "Imported from YesPos",
+                        specs: JSON.stringify({
+                            yespos_id: item.id,
+                            sku: item.sku
+                        }),
+                        stock: 100
                     }
                 });
                 createdCount++;
