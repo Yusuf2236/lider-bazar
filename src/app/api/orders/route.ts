@@ -57,11 +57,32 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        const { items, total, address, phone, location, paymentMethod } = body;
+        const { items, address, phone, location, paymentMethod } = body;
 
         if (!items || items.length === 0) {
             return new NextResponse("No items in order", { status: 400 });
         }
+
+        // Validate products exist
+        const productIds = items.map((item: any) => item.id);
+        const validProducts = await prisma.product.findMany({
+            where: {
+                id: { in: productIds }
+            },
+            select: { id: true }
+        });
+
+        const validProductIds = new Set(validProducts.map((p: any) => p.id));
+        const validItems = items.filter((item: any) => validProductIds.has(item.id));
+
+        if (validItems.length === 0) {
+            return new NextResponse("Selected products no longer exist", { status: 400 });
+        }
+
+        // Recalculate total based on valid items
+        const total = validItems.reduce((acc: number, item: any) => {
+            return acc + (item.price * item.quantity);
+        }, 0);
 
         const order = await prisma.order.create({
             data: {
@@ -73,7 +94,7 @@ export async function POST(req: Request) {
                 paymentMethod: paymentMethod || 'cash',
                 status: 'PENDING',
                 items: {
-                    create: items.map((item: any) => ({
+                    create: validItems.map((item: any) => ({
                         productId: item.id,
                         quantity: item.quantity,
                         price: Math.round(item.price)
