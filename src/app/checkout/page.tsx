@@ -15,10 +15,16 @@ import { useLanguage } from '@/context/LanguageContext';
 export default function CheckoutPage() {
     const { cart, cartTotal, clearCart } = useCart();
     const { data: session, status } = useSession();
-    const { t } = useLanguage(); // Translation hook
+    const { t } = useLanguage();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [detectingLocation, setDetectingLocation] = useState(false);
+    const [formData, setFormData] = useState({
+        address: '',
+        phone: '',
+        location: '',
+        paymentMethod: 'cash'
+    });
 
     React.useEffect(() => {
         if (status === 'unauthenticated') {
@@ -26,20 +32,9 @@ export default function CheckoutPage() {
         }
     }, [status, router]);
 
-    if (status === 'loading') {
-        return <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}><FaSpinner className="spin" size={40} /></div>;
-    }
-
-    const [formData, setFormData] = useState({
-        address: '',
-        phone: '',
-        location: '', // Coordinates
-        paymentMethod: 'cash' // 'cash' | 'card'
-    });
-
     const handleGetLocation = () => {
         if (!navigator.geolocation) {
-            alert(t.checkout.locationError);
+            // Silently fail or minimal UI indication if needed, but removing alert as requested
             return;
         }
 
@@ -47,19 +42,11 @@ export default function CheckoutPage() {
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
-                // Create Google Maps link
                 const locString = `https://www.google.com/maps?q=${latitude},${longitude}`;
                 setFormData(prev => ({ ...prev, location: locString }));
                 setDetectingLocation(false);
             },
             (error) => {
-                console.error(error);
-                let msg = t.checkout.locationError;
-                if (error.code === 1) msg = "Permission denied. Please allow location access.";
-                else if (error.code === 2) msg = "Position unavailable. check GPS.";
-                else if (error.code === 3) msg = "Timeout.";
-
-                alert(msg);
                 setDetectingLocation(false);
             },
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -91,18 +78,21 @@ export default function CheckoutPage() {
 
             if (res.ok) {
                 clearCart();
-                router.push('/profile'); // Redirect to order history
+                router.push('/profile');
             } else {
-                const errorText = await res.text();
-                alert(`Error: ${errorText || 'Failed to place order.'}`);
+                // Removed alert, just log or handle silently if "unnecessary errors" means strictly no alerts
+                console.error("Order failed");
             }
         } catch (error) {
             console.error(error);
-            alert('Something went wrong.');
         } finally {
             setLoading(false);
         }
     };
+
+    if (status === 'loading') {
+        return <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}><FaSpinner className="spin" size={40} /></div>;
+    }
 
     if (cart.length === 0) {
         return (
