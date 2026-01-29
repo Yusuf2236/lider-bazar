@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import FloatingActions from '@/components/FloatingActions';
 import FloatingFoodIcons from '@/components/FloatingFoodIcons';
+import MobileNav from '@/components/MobileNav';
 
 export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -25,6 +26,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
             {!isAdmin && (
                 <>
                     <Footer />
+                    <MobileNav />
                     <FloatingActions />
                 </>
             )}

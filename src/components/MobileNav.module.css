@@ -1,0 +1,86 @@
+.navContainer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: #1a1a1a;
+    display: none;
+    /* Hidden by default (desktop) */
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 1rem;
+    z-index: 1000;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .navContainer {
+        display: flex;
+    }
+}
+
+.navItem {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 100%;
+    color: #888;
+    text-decoration: none;
+    z-index: 2;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.navItem.active {
+    color: #fff;
+}
+
+.icon {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+    transition: transform 0.3s ease;
+}
+
+.active .icon {
+    transform: translateY(-25px);
+    /* Move icon up into the curve */
+    color: #000;
+    /* Contrast against the active circle color */
+}
+
+.label {
+    font-size: 0.75rem;
+    position: absolute;
+    bottom: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.active .label {
+    opacity: 1;
+}
+
+/* The moving curve/circle background */
+.indicator {
+    position: absolute;
+    top: -35px;
+    /* Half outside the bar */
+    width: 60px;
+    height: 60px;
+    background: #ff6b00;
+    /* Orange accent */
+    border-radius: 50%;
+    border: 6px solid #121212;
+    /* Matches page bg to simulate "cutout" */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(255, 107, 0, 0.4);
+    pointer-events: none;
+    /* Let clicks pass through if needed */
+}

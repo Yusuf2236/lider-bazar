@@ -66,4 +66,10 @@
 /* Image shows two orange buttons, top one darker/filled? Or both filled. 
    Let's check image... top is chat bubble (filled orange), bottom is phone (outlined or lighter).
    Actually image shows: Top (Chat) = Filled Orange. Bottom (Phone) = Outlined or White with Orange Icon.
-   Wait, zooming in... Bottom one is white/lighter with orange icon. Top one is solid orange with white icon. */
+/* ... existing styles ... */
+
+@media (max-width: 768px) {
+    .container {
+        display: none;
+    }
+}
