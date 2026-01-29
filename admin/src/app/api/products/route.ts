@@ -27,9 +27,55 @@ export async function GET() {
             image: product.image
         }));
 
+        // ... GET handler existing ...
         return NextResponse.json(formattedProducts);
     } catch (error) {
         console.error("[ADMIN_PRODUCTS_GET]", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
+}
+
+export async function POST(req: Request) {
+    try {
+        const body = await req.json();
+        const { name, price, categoryName, description, image, stock } = body;
+
+        // Simple validation
+        if (!name || !price) {
+            return new NextResponse("Name and Price are required", { status: 400 });
+        }
+
+        // Find or create category
+        // In a real app, you'd likely select from existing categories, but this is a quick fix
+        let category = await prisma.category.findFirst({
+            where: { name: categoryName || "General" }
+        });
+
+        if (!category) {
+            category = await prisma.category.create({
+                data: {
+                    name: categoryName || "General",
+                    slug: (categoryName || "General").toLowerCase().replace(/\s+/g, '-'),
+                    image: "/placeholder.png"
+                }
+            });
+        }
+
+        const product = await prisma.product.create({
+            data: {
+                name,
+                price: Number(price),
+                description: description || "",
+                image: image || "/placeholder.png",
+                stock: Number(stock) || 0,
+                categoryId: category.id,
+                isNew: true
+            }
+        });
+
+        return NextResponse.json(product);
+    } catch (error) {
+        console.error("[ADMIN_PRODUCTS_POST]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

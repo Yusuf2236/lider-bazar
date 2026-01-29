@@ -6,11 +6,8 @@ import SessionProvider from '@/context/AuthProvider';
 import { CartProvider } from '@/context/CartContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { ToastProvider } from '@/context/ToastContext';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import FloatingActions from '@/components/FloatingActions';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
-import FloatingFoodIcons from '@/components/FloatingFoodIcons';
+import ClientLayoutWrapper from '@/components/ClientLayoutWrapper';
 import AnimatedBackground from '@/components/AnimatedBackground';
 
 // const inter = Inter({ subsets: ['latin'] });
@@ -55,14 +52,10 @@ export default function RootLayout({
             <LanguageProvider>
               <ToastProvider>
                 <CartProvider>
-                  <FloatingFoodIcons />
                   <GoogleAnalytics />
-                  <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative', zIndex: 1 }}>
-                    <Header />
-                    <main style={{ flex: 1 }}>{children}</main>
-                    <Footer />
-                    <FloatingActions />
-                  </div>
+                  <ClientLayoutWrapper>
+                    {children}
+                  </ClientLayoutWrapper>
                 </CartProvider>
               </ToastProvider>
             </LanguageProvider>

@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaDollarSign, FaBoxOpen, FaShoppingCart, FaUsers } from 'react-icons/fa';
+import { FaDollarSign, FaBoxOpen, FaShoppingCart, FaUsers, FaSync } from 'react-icons/fa';
 
 const StatCard = ({ title, value, icon, color }: { title: string, value: string, icon: React.ReactNode, color: string }) => (
     <motion.div
@@ -35,11 +35,67 @@ const StatCard = ({ title, value, icon, color }: { title: string, value: string,
 );
 
 export default function AdminDashboard() {
+    const [syncing, setSyncing] = useState(false);
+    const [syncResult, setSyncResult] = useState<{ success?: boolean, message?: string } | null>(null);
+
+    const handleSync = async () => {
+        setSyncing(true);
+        setSyncResult(null);
+        try {
+            const res = await fetch('/api/admin/sync-products', { method: 'POST' });
+            const data = await res.json();
+
+            if (res.ok) {
+                setSyncResult({ success: true, message: data.message });
+            } else {
+                setSyncResult({ success: false, message: data.message || "Sync failed" });
+            }
+        } catch (error) {
+            setSyncResult({ success: false, message: "Network error during sync" });
+        } finally {
+            setSyncing(false);
+        }
+    };
+
     return (
         <div>
-            <div style={{ marginBottom: '2.5rem' }}>
-                <h1 style={{ color: '#fff', fontSize: '2rem', fontWeight: 'bold' }}>Dashboard Overview</h1>
-                <p style={{ color: '#86868b' }}>Welcome back, Admin. Here's what's happening.</p>
+            <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div>
+                    <h1 style={{ color: '#fff', fontSize: '2rem', fontWeight: 'bold' }}>Dashboard Overview</h1>
+                    <p style={{ color: '#86868b' }}>Welcome back, Admin. Here's what's happening.</p>
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    {syncResult && (
+                        <span style={{
+                            color: syncResult.success ? '#32d74b' : '#ff3b30',
+                            fontSize: '0.9rem',
+                            fontWeight: '500'
+                        }}>
+                            {syncResult.message}
+                        </span>
+                    )}
+                    <button
+                        onClick={handleSync}
+                        disabled={syncing}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            padding: '0.8rem 1.5rem',
+                            background: syncing ? '#3a3a3c' : 'linear-gradient(135deg, #0a84ff, #5e5ce6)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '12px',
+                            cursor: syncing ? 'not-allowed' : 'pointer',
+                            fontWeight: 'bold',
+                            boxShadow: '0 4px 12px rgba(10, 132, 255, 0.3)'
+                        }}
+                    >
+                        <FaSync className={syncing ? 'spin' : ''} />
+                        {syncing ? 'Syncing...' : 'Sync YesPos'}
+                    </button>
+                </div>
             </div>
 
             <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '3rem' }}>

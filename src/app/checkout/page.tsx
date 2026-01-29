@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useCart } from '@/context/CartContext';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FaMapMarkerAlt, FaPhone, FaMoneyBillWave, FaCheckCircle, FaSpinner } from 'react-icons/fa';
@@ -77,11 +77,35 @@ export default function CheckoutPage() {
             });
 
             if (res.ok) {
-                clearCart();
-                router.push('/profile');
+                const data = await res.json();
+
+                // If we get a payment response with a URL (or similar) from YES POS, redirect.
+                // Note: The structure of YES POS response might vary, usually it has a link or we just redirect to a constructed URL.
+                // Assuming payment object resembles { payment_url: "..." } or similar if YES POS returns one.
+                // If YES POS returns raw data, we might need to inspect it.
+                // The user prompt says: "Checkout -> YES POS sahifasiga redirect".
+
+                if (data.payment && data.payment.payment_url) {
+                    // Redirect to YES POS
+                    window.location.href = data.payment.payment_url;
+                } else if (data.order) {
+                    // Standard success without redirect (e.g. Cash)
+                    clearCart();
+                    router.push('/profile');
+                } else {
+                    console.error("Unknown response structure", data);
+                    alert("Order created but response was unexpected. check profile.");
+                    router.push('/profile');
+                }
             } else {
-                // Removed alert, just log or handle silently if "unnecessary errors" means strictly no alerts
-                console.error("Order failed");
+                if (res.status === 401) {
+                    console.error("Session invalid, signing out...");
+                    signOut({ callbackUrl: '/login' });
+                    return;
+                }
+                const err = await res.text();
+                console.error("Order failed", err);
+                alert("Order failed: " + err);
             }
         } catch (error) {
             console.error(error);

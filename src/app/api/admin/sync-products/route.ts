@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getYesPosProducts, YesPosProduct } from "@/lib/yespos";
+import { apiHandler } from "@/lib/api-handler";
 
 export const dynamic = 'force-dynamic';
 
@@ -16,81 +17,9 @@ export async function OPTIONS() {
     return NextResponse.json({}, { headers: corsHeaders() });
 }
 
-export async function POST() {
-    try {
-        console.log("[SYNC_PRODUCTS] Starting sync...");
-        const products = await getYesPosProducts();
-
-        if (products.length === 0) {
-            return NextResponse.json(
-                { message: "No products found in YesPos or failed to fetch." },
-                { status: 404, headers: corsHeaders() }
-            );
-        }
-
-        console.log(`[SYNC_PRODUCTS] Fetched ${products.length} products.`);
-
-        // Ensure default category exists
-        let category = await prisma.category.findFirst({
-            where: { name: "YesPos Import" }
-        });
-
-        if (!category) {
-            category = await prisma.category.create({
-                data: {
-                    name: "YesPos Import",
-                    slug: "yespos-import",
-                    image: "/placeholder.png" // We might need a placeholder image
-                }
-            });
-        }
-
-        let updatedCount = 0;
-        let createdCount = 0;
-
-        for (const item of products) {
-            const price = item.price || 0;
-
-            const existingProduct = await prisma.product.findFirst({
-                where: { name: item.name }
-            });
-
-            if (existingProduct) {
-                await prisma.product.update({
-                    where: { id: existingProduct.id },
-                    data: {
-                        price: price,
-                        image: item.image || existingProduct.image,
-                        description: item.description || existingProduct.description
-                    }
-                });
-                updatedCount++;
-            } else {
-                await prisma.product.create({
-                    data: {
-                        name: item.name,
-                        price: price,
-                        image: item.image || "/placeholder.png",
-                        categoryId: category.id,
-                        description: item.description || "Imported from YesPos",
-                        specs: JSON.stringify({
-                            yespos_id: item.id,
-                            sku: item.sku
-                        }),
-                        stock: 100
-                    }
-                });
-                createdCount++;
-            }
-        }
-
-        return NextResponse.json({
-            success: true,
-            message: `Synced ${products.length} products. Created: ${createdCount}, Updated: ${updatedCount}`
-        }, { headers: corsHeaders() });
-
-    } catch (error: any) {
-        console.error("[SYNC_PRODUCTS_ERROR]", error);
-        return new NextResponse(`Sync failed: ${error.message}`, { status: 500, headers: corsHeaders() });
-    }
-}
+export const POST = apiHandler(async () => {
+    return NextResponse.json({
+        success: true,
+        message: "Sync is disabled. Products are managed locally in Admin Panel."
+    }, { headers: corsHeaders() });
+});

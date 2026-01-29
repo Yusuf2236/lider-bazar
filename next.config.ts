@@ -1,7 +1,10 @@
-
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV !== 'production';
+const isAdminPort = process.env.APP_PORT === '3001';
+
 const nextConfig: NextConfig = {
+  distDir: isAdminPort ? '.next-admin' : '.next', // Separate build for Admin Port
   /* config options here */
   productionBrowserSourceMaps: false, // Disable source maps in production to hide code
   compiler: {

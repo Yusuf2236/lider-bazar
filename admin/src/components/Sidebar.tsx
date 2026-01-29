@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import { FaChartLine, FaBoxOpen, FaClipboardList, FaStore, FaSignOutAlt, FaPlus, FaShoppingCart } from 'react-icons/fa';
 import styles from './Sidebar.module.css';
 
@@ -11,7 +12,8 @@ const menuItems = [
     { name: 'Orders', path: '/orders', icon: <FaShoppingCart /> },
     { name: 'Products', path: '/products', icon: <FaBoxOpen /> },
     { name: 'Inventory', path: '/inventory', icon: <FaClipboardList /> },
-    { name: 'Sales Reports', path: '/reports', icon: <FaChartLine /> },
+    { name: 'Reports', path: '/reports', icon: <FaChartLine /> },
+    { name: 'Settings', path: '/settings', icon: <FaClipboardList /> }, // Simple icon reuse
 ];
 
 export default function Sidebar() {
@@ -40,7 +42,7 @@ export default function Sidebar() {
             </nav>
 
             <div className={styles.bottom}>
-                <button className={styles.logoutBtn}>
+                <button className={styles.logoutBtn} onClick={() => signOut()}>
                     <FaSignOutAlt /> <span>Logout</span>
                 </button>
             </div>

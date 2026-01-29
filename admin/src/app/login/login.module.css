@@ -1,0 +1,197 @@
+/* login.module.css */
+.container {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: #050505;
+}
+
+/* Dynamic Gradient Background (Orange/Black Flow) */
+.backgroundAnimation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(-45deg, #000000, #1a0b00, #2b1100, #000000);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    z-index: 0;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Floating Orbs (The "Previous" Animation) */
+.orbContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.orb {
+    position: absolute;
+    bottom: -150px;
+    background: rgba(255, 107, 0, 0.15);
+    /* Orange transparent */
+    box-shadow: 0 0 40px 10px rgba(255, 107, 0, 0.3);
+    border-radius: 50%;
+    animation: floatUp 25s linear infinite;
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+.orb:nth-child(1) {
+    left: 10%;
+    width: 100px;
+    height: 100px;
+    animation-duration: 20s;
+    animation-delay: 0s;
+}
+
+.orb:nth-child(2) {
+    left: 30%;
+    width: 150px;
+    height: 150px;
+    animation-duration: 25s;
+    animation-delay: 4s;
+}
+
+.orb:nth-child(3) {
+    left: 70%;
+    width: 80px;
+    height: 80px;
+    animation-duration: 18s;
+    animation-delay: 2s;
+}
+
+.orb:nth-child(4) {
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    animation-duration: 30s;
+    animation-delay: 7s;
+}
+
+.orb:nth-child(5) {
+    left: 90%;
+    width: 120px;
+    height: 120px;
+    animation-duration: 22s;
+    animation-delay: 5s;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.8;
+    }
+
+    90% {
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translateY(-120vh) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* Card Styles */
+.card {
+    background: rgba(20, 20, 20, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    padding: 3rem;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 107, 0, 0.1);
+    z-index: 10;
+    position: relative;
+}
+
+/* Input Styles */
+.inputWrapper {
+    position: relative;
+}
+
+.inputIcon {
+    position: absolute;
+    top: 50%;
+    left: 18px;
+    transform: translateY(-50%);
+    color: #ff6b00;
+    font-size: 18px;
+    z-index: 2;
+}
+
+.inputField {
+    width: 100%;
+    padding: 16px 16px 16px 50px;
+    background: rgba(255, 255, 255, 0.05);
+    /* Dark transparent */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    color: white;
+    outline: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.inputField:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ff6b00;
+    box-shadow: 0 0 15px rgba(255, 107, 0, 0.15);
+}
+
+.inputField::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.submitBtn {
+    margin-top: 1rem;
+    padding: 16px;
+    background: linear-gradient(to right, #ff6b00, #ff8800);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(255, 107, 0, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.submitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(255, 107, 0, 0.4);
+}

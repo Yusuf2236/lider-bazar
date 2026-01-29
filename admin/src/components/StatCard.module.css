@@ -6,18 +6,31 @@
     gap: 1.5rem;
     min-width: 250px;
     flex: 1;
+    /* Glassmorphism */
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, background 0.2s;
+}
+
+.card:hover {
+    background: rgba(255, 255, 255, 0.07);
+    transform: translateY(-2px);
 }
 
 .iconWrapper {
     width: 56px;
     height: 56px;
-    background: rgba(229, 94, 22, 0.1);
+    background: rgba(229, 94, 22, 0.15);
     border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
     color: var(--primary-orange);
+    box-shadow: 0 0 15px rgba(229, 94, 22, 0.1);
 }
 
 .content {
@@ -28,14 +41,18 @@
 .title {
     font-size: 0.9rem;
     font-weight: 500;
-    color: var(--gray-400);
+    color: rgba(255, 255, 255, 0.9);
+    /* Brighter 0.9 */
     margin-bottom: 0.25rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--foreground);
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    /* Glow */
 }
 
 .trend {

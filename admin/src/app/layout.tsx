@@ -19,6 +19,9 @@ export const metadata: Metadata = {
 
 import Sidebar from "@/components/Sidebar";
 
+import { Providers } from "@/components/Providers";
+import AdminLayout from "@/components/AdminLayout";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,18 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div style={{ display: 'flex' }}>
-          <Sidebar />
-          <main style={{
-            flex: 1,
-            marginLeft: '280px',
-            padding: '2rem',
-            minHeight: '100vh',
-            transition: 'margin 0.3s ease'
-          }}>
+        <Providers>
+          <AdminLayout>
             {children}
-          </main>
-        </div>
+          </AdminLayout>
+        </Providers>
       </body>
     </html>
   );

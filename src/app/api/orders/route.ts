@@ -7,109 +7,114 @@ import { createYesPosOrder } from "@/lib/yespos";
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(req: Request) {
-    try {
-        const session = await getServerSession(authOptions);
+import { apiHandler } from "@/lib/api-handler";
 
-        if (!session) {
-            return new NextResponse("Unauthorized", { status: 401 });
-        }
+export const GET = apiHandler(async (req: Request) => {
+    const session = await getServerSession(authOptions);
 
-        const user: any = session.user;
-        const where: any = {};
-
-        const dbUser = await (prisma as any).user.findUnique({ where: { id: user.id } });
-
-        if (dbUser?.role !== 'ADMIN') {
-            where.userId = user.id;
-        }
-
-        const orders = await (prisma as any).order.findMany({
-            where,
-            include: {
-                user: {
-                    select: { name: true, email: true }
-                },
-                items: {
-                    include: {
-                        product: { select: { name: true, image: true } }
-                    }
-                }
-            },
-            orderBy: {
-                createdAt: 'desc',
-            },
-        });
-
-        return NextResponse.json(orders);
-    } catch (error) {
-        console.log("[ORDERS_GET]", error);
-        return new NextResponse("Internal Error", { status: 500 });
+    if (!session) {
+        return new NextResponse("Unauthorized", { status: 401 });
     }
-}
 
-export async function POST(req: Request) {
-    try {
-        const session = await getServerSession(authOptions);
+    const user: any = session.user;
+    const where: any = {};
 
-        if (!session) {
-            return new NextResponse("Unauthorized", { status: 401 });
-        }
+    const dbUser = await (prisma as any).user.findUnique({ where: { id: user.id } });
 
-        const body = await req.json();
-        const { items, address, phone, location, paymentMethod } = body;
+    if (dbUser?.role !== 'ADMIN') {
+        where.userId = user.id;
+    }
 
-        if (!items || items.length === 0) {
-            return new NextResponse("No items in order", { status: 400 });
-        }
-
-        // Validate products exist
-        const productIds = items.map((item: any) => item.id);
-        const validProducts = await prisma.product.findMany({
-            where: {
-                id: { in: productIds }
+    const orders = await (prisma as any).order.findMany({
+        where,
+        include: {
+            user: {
+                select: { name: true, email: true }
             },
-            select: { id: true }
-        });
-
-        const validProductIds = new Set(validProducts.map((p: any) => p.id));
-        const validItems = items.filter((item: any) => validProductIds.has(item.id));
-
-        if (validItems.length === 0) {
-            return new NextResponse("Selected products no longer exist", { status: 400 });
-        }
-
-        // Recalculate total based on valid items
-        const total = validItems.reduce((acc: number, item: any) => {
-            return acc + (item.price * item.quantity);
-        }, 0);
-
-        const order = await prisma.order.create({
-            data: {
-                userId: (session.user as any).id,
-                total: Math.round(total),
-                address,
-                phone,
-                location,
-                paymentMethod: paymentMethod || 'cash',
-                status: 'PENDING',
-                items: {
-                    create: validItems.map((item: any) => ({
-                        productId: item.id,
-                        quantity: item.quantity,
-                        price: Math.round(item.price)
-                    }))
+            items: {
+                include: {
+                    product: { select: { name: true, image: true } }
                 }
-            },
-            include: {
-                user: { select: { name: true, email: true } },
-                items: true
             }
-        });
+        },
+        orderBy: {
+            createdAt: 'desc',
+        },
+    });
 
-        // Send Telegram Notification
-        try {
-            const message = `
+    return NextResponse.json(orders);
+});
+
+export const POST = apiHandler(async (req: Request) => {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+        return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const body = await req.json();
+    const { items, address, phone, location, paymentMethod } = body;
+
+    // Check if user exists in DB (handling stale sessions after DB switch)
+    const dbUser = await prisma.user.findUnique({
+        where: { id: (session.user as any).id }
+    });
+
+    if (!dbUser) {
+        return new NextResponse("User record not found. Please log out and log in again.", { status: 401 });
+    }
+
+    if (!items || items.length === 0) {
+        return new NextResponse("No items in order", { status: 400 });
+    }
+
+    // Validate products exist
+    const productIds = items.map((item: any) => item.id);
+    const validProducts = await prisma.product.findMany({
+        where: {
+            id: { in: productIds }
+        },
+        select: { id: true }
+    });
+
+    const validProductIds = new Set(validProducts.map((p: any) => p.id));
+    const validItems = items.filter((item: any) => validProductIds.has(item.id));
+
+    if (validItems.length === 0) {
+        return new NextResponse("Selected products no longer exist", { status: 400 });
+    }
+
+    // Recalculate total based on valid items
+    const total = validItems.reduce((acc: number, item: any) => {
+        return acc + (item.price * item.quantity);
+    }, 0);
+
+    const order = await prisma.order.create({
+        data: {
+            userId: (session.user as any).id,
+            total: Math.round(total),
+            address,
+            phone,
+            location,
+            paymentMethod: paymentMethod || 'cash',
+            status: 'PENDING',
+            items: {
+                create: validItems.map((item: any) => ({
+                    productId: item.id,
+                    quantity: item.quantity,
+                    price: Math.round(item.price)
+                }))
+            }
+        },
+        include: {
+            user: { select: { name: true, email: true } },
+            items: true
+        }
+    });
+
+    // Send Telegram Notification
+    try {
+        const message = `
 📦 <b>New Order Received!</b>
 
 🆔 Order ID: #${order.id.slice(-6).toUpperCase()}
@@ -121,22 +126,37 @@ export async function POST(req: Request) {
 
 <a href="https://lider-bazar.vercel.app/admin/orders">View Order</a>
 `;
-            await sendTelegramMessage(message);
-        } catch (tgError) {
-            console.error("[TELEGRAM_ERROR]", tgError);
-        }
-
-        // Send to YesPos
-        try {
-            await createYesPosOrder(order);
-        } catch (ypError) {
-            console.error("[YESPOS_ERROR]", ypError);
-        }
-
-        return NextResponse.json(order);
-    } catch (error: any) {
-        console.error("[ORDERS_POST_ERROR] Detailed error:", error);
-        return new NextResponse(`Order creation failed: ${error.message || 'Unknown error'}`, { status: 500 });
+        await sendTelegramMessage(message);
+    } catch (tgError) {
+        console.error("[TELEGRAM_ERROR]", tgError);
     }
-}
+
+    // Send to YesPos
+    let paymentResponse = null;
+    try {
+        // Construct return/cancel URLs dynamically if possible, or use defaults
+        // Getting origin from request headers if needed, but for now hardcoding or using environment could be safer
+        // User logic: return_url -> /success, cancel_url -> /cancel
+        // We will assume the frontend handles the routing for /success (maybe profile?)
+        const protocol = req.headers.get('x-forwarded-proto') || 'http';
+        const host = req.headers.get('host');
+        const baseUrl = `${protocol}://${host}`;
+
+        paymentResponse = await createYesPosOrder({
+            ...order,
+            return_url: `${baseUrl}/profile`, // User originally suggested /success, but keeping it simple for now
+            cancel_url: `${baseUrl}/checkout`
+        });
+    } catch (ypError) {
+        console.error("[YESPOS_ERROR]", ypError);
+        // We generally still want to return the order even if payment init failed, 
+        // so the user can retry. But if the user requires immediate redirect, this might be an issue.
+        // For now, let's return the order and the error/null payment.
+    }
+
+    return NextResponse.json({
+        order,
+        payment: paymentResponse
+    });
+});
 

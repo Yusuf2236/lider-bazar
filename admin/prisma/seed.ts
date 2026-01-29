@@ -1,9 +1,6 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import path from 'path'
 
-const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL! })
-const prisma = new PrismaClient({ adapter })
+const prisma = new PrismaClient()
 
 interface ProductData {
     id: string;
@@ -15,92 +12,124 @@ interface ProductData {
     rating: number;
     isNew?: boolean;
     description?: string;
+    descriptionUz?: string;
+    descriptionRu?: string;
     specs?: { [key: string]: string };
+    nameUz?: string;
+    nameRu?: string;
+}
+interface CategoryData {
+    id: string;
+    name: string;
+    image: string;
+    slug: string;
+    nameUz?: string;
+    nameRu?: string;
 }
 
-const categories = [
-    { id: '1', name: 'Baby Diapers', image: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=400', slug: 'baby-diapers' },
-    { id: '2', name: 'Drinks', image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=400', slug: 'drinks' },
-    { id: '3', name: 'Bread Products', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=400', slug: 'bread' },
-    { id: '4', name: 'Grains', image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&q=80&w=400', slug: 'grains' },
-    { id: '5', name: 'Vegetables', image: 'https://images.unsplash.com/photo-1518843875459-f738682238a6?auto=format&fit=crop&q=80&w=400', slug: 'vegetables' },
-    { id: '6', name: 'Fruits', image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=400', slug: 'fruits' },
+const categories: CategoryData[] = [
+    { id: '1', name: 'Vegetables', nameUz: 'Sabzavot mahsulotlari', nameRu: 'Овощи', image: 'https://images.unsplash.com/photo-1518843875459-f738682238a6?auto=format&fit=crop&q=80&w=400', slug: 'vegetables' },
+    { id: '2', name: 'Fruits', nameUz: 'Meva mahsulotlari', nameRu: 'Фрукты', image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&q=80&w=400', slug: 'fruits' },
+    { id: '3', name: 'Meat Products', nameUz: 'Go\'sht mahsulotlari', nameRu: 'Мясные продукты', image: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&q=80&w=400', slug: 'meat' },
+    { id: '4', name: 'Cosmetics', nameUz: 'Kosmetika mahsulotlari', nameRu: 'Косметика', image: 'https://images.unsplash.com/photo-1596462502278-27bfdd403348?auto=format&fit=crop&q=80&w=400', slug: 'cosmetics' },
+    { id: '5', name: 'Perfumes', nameUz: 'Parfumeriya mahsulotlari', nameRu: 'Парфюмерия', image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=400', slug: 'perfumes' },
+    { id: '6', name: 'Hygiene', nameUz: 'Gigiyenik mahsulotlar', nameRu: 'Гигиенические товары', image: 'https://images.unsplash.com/photo-1583947215259-38e31be8751f?auto=format&fit=crop&q=80&w=400', slug: 'hygiene' },
+    { id: '7', name: 'Household', nameUz: 'Uy ishlari mahsulotlari', nameRu: 'Товары для дома', image: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?auto=format&fit=crop&q=80&w=400', slug: 'household' },
+    { id: '8', name: 'Drinks', nameUz: 'Ichimliklar', nameRu: 'Напитки', image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=400', slug: 'drinks' },
+    { id: '9', name: 'Sweets', nameUz: 'Shirinliklar', nameRu: 'Сладости', image: 'https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?auto=format&fit=crop&q=80&w=400', slug: 'sweets' },
+    { id: '10', name: 'Chocolates', nameUz: 'Shokoladlar', nameRu: 'Шоколад', image: 'https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&q=80&w=400', slug: 'chocolates' },
+    { id: '11', name: 'Bread', nameUz: 'Non mahsulotlari', nameRu: 'Хлеб', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=400', slug: 'bread' },
+    { id: '12', name: 'Flour', nameUz: 'Unlar', nameRu: 'Мука', image: 'https://images.unsplash.com/photo-1622668516768-077ae1517c27?auto=format&fit=crop&q=80&w=400', slug: 'flour' },
+    { id: '13', name: 'Diapers', nameUz: 'Tagliklar', nameRu: 'Подгузники', image: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=400', slug: 'diapers' },
+    { id: '14', name: 'Stationery', nameUz: 'Kansovar', nameRu: 'Канцелярия', image: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&q=80&w=400', slug: 'stationery' },
+    { id: '15', name: 'Baby Food', nameUz: 'Bolalar ozuqasi', nameRu: 'Детское питание', image: 'https://images.unsplash.com/photo-1594142106060-64fa79f4c391?auto=format&fit=crop&q=80&w=400', slug: 'baby-food' },
+    { id: '16', name: 'Salads', nameUz: 'Salatlar', nameRu: 'Салаты', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=400', slug: 'salads' },
+    { id: '17', name: 'Grains', nameUz: 'Donli mahsulotlar', nameRu: 'Крупы', image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&q=80&w=400', slug: 'grains' },
+    { id: '18', name: 'Oils', nameUz: 'Yog\'lar', nameRu: 'Масла', image: 'https://images.unsplash.com/photo-1474979266404-7cadd259c308?auto=format&fit=crop&q=80&w=400', slug: 'oils' },
+    { id: '19', name: 'Tea', nameUz: 'Choylar', nameRu: 'Чай', image: 'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&q=80&w=400', slug: 'tea' },
+    { id: '20', name: 'Sausages', nameUz: 'Kolbasa mahsulotlari', nameRu: 'Колбасные изделия', image: 'https://images.unsplash.com/photo-1597935749479-72c0576395b2?auto=format&fit=crop&q=80&w=400', slug: 'sausages' },
+    { id: '21', name: 'Canned Food', nameUz: 'Konservalar', nameRu: 'Консервы', image: 'https://images.unsplash.com/photo-1584281350027-463ae02c710f?auto=format&fit=crop&q=80&w=400', slug: 'canned-food' },
+    { id: '22', name: 'Dairy', nameUz: 'Sut va sut mahsulotlari', nameRu: 'Молочные продукты', image: 'https://images.unsplash.com/photo-1628088062854-d1870b4553da?auto=format&fit=crop&q=80&w=400', slug: 'dairy' },
+    { id: '23', name: 'Semi-finished', nameUz: 'Yarim tayyor mahsulotlar', nameRu: 'Полуфабрикаты', image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=400', slug: 'semi-finished' },
+    { id: '24', name: 'Pastries', nameUz: 'Pishiriq va desertlar', nameRu: 'Выпечка и десерты', image: 'https://images.unsplash.com/photo-1559599189-fe84eea4eb1e?auto=format&fit=crop&q=80&w=400', slug: 'pastries' },
+    { id: '25', name: 'Preserves', nameUz: 'Asal, murabbo, shirin konservalar', nameRu: 'Варенье, мед', image: 'https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?auto=format&fit=crop&q=80&w=400', slug: 'preserves' },
+    { id: '26', name: 'Spices', nameUz: 'Ziravorlar', nameRu: 'Специи', image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=400', slug: 'spices' },
+    { id: '27', name: 'Coffee', nameUz: 'Kofe', nameRu: 'Кофе', image: 'https://images.unsplash.com/photo-1610632380989-680fe40816c6?auto=format&fit=crop&q=80&w=400', slug: 'coffee' },
+    { id: '28', name: 'Eggs', nameUz: 'Tuxum', nameRu: 'Яйца', image: 'https://images.unsplash.com/photo-1582722878654-02fd23747037?auto=format&fit=crop&q=80&w=400', slug: 'eggs' },
+    { id: '29', name: 'Gifts', nameUz: 'Sovg\'alar', nameRu: 'Подарки', image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&q=80&w=400', slug: 'gifts' },
+    { id: '30', name: 'Religious', nameUz: 'Joynomoz va kitoblar', nameRu: 'Религиозные товары', image: 'https://images.unsplash.com/photo-1600813735165-42bf9eb5b791?auto=format&fit=crop&q=80&w=400', slug: 'religious' },
+    { id: '31', name: 'Air Fresheners', nameUz: 'Osvejitellar', nameRu: 'Освежители', image: 'https://images.unsplash.com/photo-1588616422325-132d7515dbe3?auto=format&fit=crop&q=80&w=400', slug: 'fresheners' },
+    { id: '32', name: 'Watches', nameUz: 'Soatlar', nameRu: 'Часы', image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&q=80&w=400', slug: 'watches' },
+    { id: '33', name: 'Toys', nameUz: 'O\'yinchoqlar', nameRu: 'Игрушки', image: 'https://images.unsplash.com/photo-1566576912902-1d6db6b8d5a2?auto=format&fit=crop&q=80&w=400', slug: 'toys' },
+    { id: '34', name: 'Cases', nameUz: 'Chexollar', nameRu: 'Чехлы', image: 'https://images.unsplash.com/photo-1586105251261-72a756497a11?auto=format&fit=crop&q=80&w=400', slug: 'cases' },
+    { id: '35', name: 'Magnets', nameUz: 'Magnitlar', nameRu: 'Магниты', image: 'https://images.unsplash.com/photo-1517404215738-15263e9f9178?auto=format&fit=crop&q=80&w=400', slug: 'magnets' },
+    { id: '36', name: 'Inks', nameUz: 'Printer ranglari', nameRu: 'Чернила', image: 'https://images.unsplash.com/photo-1616499370260-485b3e5ed653?auto=format&fit=crop&q=80&w=400', slug: 'inks' },
+    { id: '37', name: 'Packages', nameUz: 'Paketlar', nameRu: 'Пакеты', image: 'https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=400', slug: 'packages' },
+    { id: '38', name: 'Diet', nameUz: 'Dieta mahsulotlari', nameRu: 'Диетические продукты', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=400', slug: 'diet' },
+    { id: '39', name: 'Receipts', nameUz: 'Chek qog\'ozlar', nameRu: 'Чековая бумага', image: 'https://images.unsplash.com/photo-1628191010376-78ef9d9b68eb?auto=format&fit=crop&q=80&w=400', slug: 'receipts' },
+    { id: '40', name: 'Bags', nameUz: 'Sumkalar', nameRu: 'Сумки', image: 'https://images.unsplash.com/photo-1559563458-527698bf5295?auto=format&fit=crop&q=80&w=400', slug: 'bags' },
+    { id: '41', name: 'Cleaning', nameUz: 'Tozalash vositalari', nameRu: 'Чистящие средства', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=400', slug: 'cleaning' },
+    { id: '42', name: 'Dental', nameUz: 'Tish pasta va shotkalar', nameRu: 'Зубная паста и щетки', image: 'https://images.unsplash.com/photo-1559591937-e1dc37715011?auto=format&fit=crop&q=80&w=400', slug: 'dental' },
+    { id: '43', name: 'Disposable', nameUz: 'Bir martalik idishlar', nameRu: 'Одноразовая посуда', image: 'https://images.unsplash.com/photo-1533038590840-1cde6b468958?auto=format&fit=crop&q=80&w=400', slug: 'disposable' },
 ];
 
 const products: ProductData[] = [
-    // Baby Diapers
-    { id: 'bd1', name: 'Pampers Premium Care 1', price: 180000, oldPrice: 200000, image: 'https://images.unsplash.com/photo-1627844030619-3fddb596637e?auto=format&fit=crop&q=80&w=600', category: 'Baby Diapers', rating: 4.9, isNew: true, description: 'Softest comfort and best skin protection from Pampers. 5-star skin protection.', specs: { 'Size': '1 (Newborn)', 'Count': '80 pcs', 'Origin': 'Poland' } },
-    { id: 'bd2', name: 'Huggies Elite Soft 2', price: 195000, image: 'https://images.unsplash.com/photo-1558230559-679ce681ff57?auto=format&fit=crop&q=80&w=600', category: 'Baby Diapers', rating: 4.8, description: 'Contains 100% organic cotton. Hypoallergenic and breathable.', specs: { 'Size': '2 (3-6kg)', 'Count': '66 pcs', 'Origin': 'Russia' } },
-    { id: 'bd3', name: 'Meries Baby Diapers S', price: 210000, oldPrice: 230000, image: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=600', category: 'Baby Diapers', rating: 4.7, description: 'Premium Japanese quality diapers with exceptional breathability.', specs: { 'Size': 'S (4-8kg)', 'Count': '82 pcs', 'Origin': 'Japan' } },
-    { id: 'bd4', name: 'Pampers Pants 4', price: 160000, image: 'https://images.unsplash.com/photo-1563205856-4c7403567793?auto=format&fit=crop&q=80&w=600', category: 'Baby Diapers', rating: 4.6, description: 'Easy on, easy off pants. 360 fit for active babies.', specs: { 'Size': '4 (9-15kg)', 'Count': '52 pcs', 'Origin': 'Turkey' } },
-    { id: 'bd5', name: 'Libero Comfort 3', price: 155000, image: 'https://images.unsplash.com/photo-1562947157-558256e25d40?auto=format&fit=crop&q=80&w=600', category: 'Baby Diapers', rating: 4.5, description: 'Dermatologically tested. Lotion free.', specs: { 'Size': '3 (5-9kg)', 'Count': '60 pcs', 'Origin': 'Sweden' } },
-    { id: 'bd6', name: 'Eco-Friendly Diapers', price: 250000, image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80&w=600', category: 'Baby Diapers', rating: 5.0, isNew: true, description: 'Biodegradable bamboo diapers. Gentle on skin and planet.', specs: { 'Size': 'M', 'Count': '40 pcs', 'Material': 'Bamboo' } },
-    { id: 'bd7', name: 'Night Time Diapers', price: 190000, image: 'https://images.unsplash.com/photo-1549488827-0cfd695b2140?auto=format&fit=crop&q=80&w=600', category: 'Baby Diapers', rating: 4.8, description: 'Extra absorbency for up to 12 hours of dry sleep.', specs: { 'Size': 'L', 'Count': '48 pcs', 'Type': 'Night' } },
-    { id: 'bd8', name: 'Newborn Starter Pack', price: 120000, oldPrice: 140000, image: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=600', category: 'Baby Diapers', rating: 4.9, description: 'Perfect starter kit for new parents. Includes wipes.', specs: { 'Size': 'NB', 'Count': '30 pcs', 'Extras': 'Wipes' } },
-
-    // Drinks
-    { id: 'dr1', name: 'Coca-Cola 1.5L', price: 12000, oldPrice: 14000, image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=600', category: 'Drinks', rating: 4.8, description: 'Classic sparkling soft drink. Best served ice cold.', specs: { 'Volume': '1.5 L', 'Sugar': 'Yes', 'Origin': 'Uzbekistan' } },
-    { id: 'dr2', name: 'Pepsi 1.5L', price: 11500, image: 'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&q=80&w=600', category: 'Drinks', rating: 4.7, description: 'Bold, refreshing taste of Pepsi.', specs: { 'Volume': '1.5 L', 'Sugar': 'Yes', 'Origin': 'Uzbekistan' } },
-    { id: 'dr3', name: 'Fanta Orange 1.5L', price: 12000, image: 'https://images.unsplash.com/photo-1624517452488-04869289c4ca?auto=format&fit=crop&q=80&w=600', category: 'Drinks', rating: 4.6, description: 'Fruity orange taste. Made with fruit juice.', specs: { 'Volume': '1.5 L', 'Flavor': 'Orange', 'Origin': 'Uzbekistan' } },
-    { id: 'dr4', name: 'Natural Mineral Water', price: 3000, image: 'https://images.unsplash.com/photo-1560023907-5f339617ea30?auto=format&fit=crop&q=80&w=600', category: 'Drinks', rating: 4.9, description: 'Pure mountain spring water.', specs: { 'Volume': '0.5 L', 'Type': 'Still', 'Origin': 'Tian Shan' } },
-    { id: 'dr5', name: 'Orange Juice 100%', price: 25000, oldPrice: 32000, image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&q=80&w=600', category: 'Drinks', rating: 4.9, description: '100% natural orange juice without added sugar.', specs: { 'Volume': '1 L', 'Brand': 'Rich', 'Origin': 'Russia' } },
-    { id: 'dr6', name: 'Apple Juice', price: 22000, image: 'https://images.unsplash.com/photo-1573500814966-2613ce91a5e1?auto=format&fit=crop&q=80&w=600', category: 'Drinks', rating: 4.7, description: 'Clarified apple nectar.', specs: { 'Volume': '1 L', 'Brand': 'Bliss', 'Origin': 'Uzbekistan' } },
-    { id: 'dr7', name: 'Red Bull Energy', price: 18000, image: 'https://images.unsplash.com/photo-1598460677112-25e40e4f8d4f?auto=format&fit=crop&q=80&w=600', category: 'Drinks', rating: 4.8, isNew: true, description: 'Vitalizes body and mind.', specs: { 'Volume': '250 ml', 'Caffeine': 'Yes', 'Origin': 'Austria' } },
-    { id: 'dr8', name: 'Iced Tea Lemon', price: 9000, image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&q=80&w=600', category: 'Drinks', rating: 4.5, description: 'Refreshing tea drink with lemon flavor.', specs: { 'Volume': '1 L', 'Brand': 'FuseTea', 'Flavor': 'Lemon' } },
-    { id: 'dr9', name: 'Green Tea Bottle', price: 7000, image: 'https://images.unsplash.com/photo-1627464082269-e91024bd3540?auto=format&fit=crop&q=80&w=600', category: 'Drinks', rating: 4.6, description: 'Cold brewed green tea without sugar.', specs: { 'Volume': '0.5 L', 'Sugar': 'No', 'Type': 'Green' } },
-    { id: 'dr10', name: 'Cold Coffee Latte', price: 15000, image: 'https://images.unsplash.com/photo-1579308104593-47055c57fba3?auto=format&fit=crop&q=80&w=600', category: 'Drinks', rating: 4.8, description: 'Ready to drink chilled latte.', specs: { 'Volume': '250 ml', 'Brand': 'Starbucks', 'Type': 'Latte' } },
-
-    // Bread Products
-    { id: 'br1', name: 'Non (Traditional Bread)', price: 4000, image: 'https://images.unsplash.com/photo-1589139178465-950c44365859?auto=format&fit=crop&q=80&w=600', category: 'Bread Products', rating: 5.0, description: 'Freshly baked traditional Uzbek flatbread.', specs: { 'Weight': '400g', 'Type': 'Tandir', 'Origin': 'Local' } },
-    { id: 'br2', name: 'Sliced White Bread', price: 6000, image: 'https://images.unsplash.com/photo-1589367920969-ab8e050bbb04?auto=format&fit=crop&q=80&w=600', category: 'Bread Products', rating: 4.5, description: 'Soft white bread, perfect for sandwiches.', specs: { 'Weight': '500g', 'Sliced': 'Yes', 'Brand': 'Burs' } },
-    { id: 'br3', name: 'Whole Wheat Bread', price: 8000, oldPrice: 10000, image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=600', category: 'Bread Products', rating: 4.8, description: 'Healthy whole grain bread rich in fiber.', specs: { 'Weight': '400g', 'Grain': 'Whole Wheat', 'Dietary': 'High Fiber' } },
-    { id: 'br4', name: 'Baguette', price: 5000, image: 'https://images.unsplash.com/photo-1595828859239-2fe49e7b233e?auto=format&fit=crop&q=80&w=600', category: 'Bread Products', rating: 4.7, description: 'Crispy French style baguette.', specs: { 'Weight': '250g', 'Style': 'French', 'Baking': 'Daily' } },
-    { id: 'br5', name: 'Croissant Butter', price: 12000, image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=600', category: 'Bread Products', rating: 4.9, isNew: true, description: 'Flaky, buttery croissants made with real butter.', specs: { 'Pack': '2 pcs', 'Filling': 'None', 'Type': 'Butter' } },
-    { id: 'br6', name: 'Rye Bread', price: 9000, image: 'https://images.unsplash.com/photo-1533464731170-ae40417fc94e?auto=format&fit=crop&q=80&w=600', category: 'Bread Products', rating: 4.6, description: 'Dense, dark rye bread with caraway seeds.', specs: { 'Weight': '450g', 'Grain': 'Rye', 'Style': 'Borodinsky' } },
-    { id: 'br7', name: 'Burger Buns (4pcs)', price: 10000, image: 'https://images.unsplash.com/photo-1553185368-80f2dff171a8?auto=format&fit=crop&q=80&w=600', category: 'Bread Products', rating: 4.5, description: 'Soft sesame topped buns for burgers.', specs: { 'Count': '4 pcs', 'Topping': 'Sesame', 'Use': 'Burgers' } },
-    { id: 'br8', name: 'Garlic Bread', price: 8500, image: 'https://images.unsplash.com/photo-1573140247632-f84660f67627?auto=format&fit=crop&q=80&w=600', category: 'Bread Products', rating: 4.8, description: 'Baguette with garlic butter and herbs.', specs: { 'Weight': '300g', 'Flavor': 'Garlic & Herb', 'Ready': 'To Heat' } },
-
-    // Grains
-    { id: 'gr1', name: 'Rice Laser (1kg)', price: 22000, oldPrice: 25000, image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80&w=600', category: 'Grains', rating: 4.9, description: 'Premium Laser rice for perfect pilaf.', specs: { 'Weight': '1 kg', 'Type': 'Laser', 'Origin': 'Xorazm' } },
-    { id: 'gr2', name: 'Buckwheat (Grechka)', price: 14000, image: 'https://images.unsplash.com/photo-1590390886546-51203b860292?auto=format&fit=crop&q=80&w=600', category: 'Grains', rating: 4.7, description: 'High quality roasted buckwheat kernels.', specs: { 'Weight': '900g', 'Type': 'Roasted', 'Origin': 'Russia' } },
-    { id: 'gr3', name: 'Pasta Spaghetti', price: 11000, image: 'https://images.unsplash.com/photo-1551462147-37885acc36f1?auto=format&fit=crop&q=80&w=600', category: 'Grains', rating: 4.6, description: 'Durum wheat semolina spaghetti.', specs: { 'Weight': '500g', 'Type': 'Spaghetti', 'Cooking Time': '9 min' } },
-    { id: 'gr4', name: 'Oats (Hercules)', price: 9000, image: 'https://images.unsplash.com/photo-1584511652496-c65d63327d85?auto=format&fit=crop&q=80&w=600', category: 'Grains', rating: 4.8, description: 'Rolled oats for healthy breakfast porridge.', specs: { 'Weight': '400g', 'Type': 'Rolled', 'Cook': '5 min' } },
-    { id: 'gr5', name: 'Red Lentils', price: 18000, image: 'https://images.unsplash.com/photo-1518970408542-a169b2b781b0?auto=format&fit=crop&q=80&w=600', category: 'Grains', rating: 4.7, description: 'Quick cooking split red lentils.', specs: { 'Weight': '800g', 'Type': 'Split Red', 'Use': 'Soups' } },
-    { id: 'gr6', name: 'Chickpeas (Noxat)', price: 20000, image: 'https://images.unsplash.com/photo-1515543904379-3d757afe72e3?auto=format&fit=crop&q=80&w=600', category: 'Grains', rating: 4.6, description: 'Large chickpeas for Hummus and Plov.', specs: { 'Weight': '1 kg', 'Size': 'Large', 'Origin': 'Uzbekistan' } },
-    { id: 'gr7', name: 'Basmati Rice Premium', price: 35000, oldPrice: 40000, image: 'https://images.unsplash.com/photo-1563607759160-b3fa5a48430a?auto=format&fit=crop&q=80&w=600', category: 'Grains', rating: 5.0, isNew: true, description: 'Extra long grain aromatic Basmati rice.', specs: { 'Weight': '1 kg', 'Type': 'Basmati', 'Origin': 'Pakistan' } },
-    { id: 'gr8', name: 'Wheat Flour (2kg)', price: 15000, image: 'https://images.unsplash.com/photo-1622668516768-077ae1517c27?auto=format&fit=crop&q=80&w=600', category: 'Grains', rating: 4.8, description: 'All-purpose white wheat flour.', specs: { 'Weight': '2 kg', 'Grade': 'Highest', 'Use': 'Baking' } },
-    { id: 'gr9', name: 'Corn Flour', price: 12000, image: 'https://images.unsplash.com/photo-1616738920141-86ae486bd291?auto=format&fit=crop&q=80&w=600', category: 'Grains', rating: 4.5, description: 'Fine yellow corn flour.', specs: { 'Weight': '800g', 'Type': 'Corn', 'Gluten Free': 'Yes' } },
-    { id: 'gr10', name: 'Barley', price: 8000, image: 'https://images.unsplash.com/photo-1586554523971-d64cb207c425?auto=format&fit=crop&q=80&w=600', category: 'Grains', rating: 4.6, description: 'Pearl barley for soups and stews.', specs: { 'Weight': '900g', 'Type': 'Pearl', 'Cooking': '40 min' } },
-
-    // Vegetables
-    { id: 'vg1', name: 'Organic Tomatoes', price: 15000, image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.8, description: 'Sweet and juicy vine-ripened tomatoes.', specs: { 'Weight': '1 kg', 'Variety': 'Vine', 'Origin': 'Greenhouse' } },
-    { id: 'vg2', name: 'Fresh Cucumbers', price: 12000, image: 'https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.7, description: 'Crisp, short cucumbers ideal for salads.', specs: { 'Weight': '1 kg', 'Type': 'Short', 'Texture': 'Crunchy' } },
-    { id: 'vg3', name: 'Potatoes', price: 6000, image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.6, description: 'Large potatoes suitable for frying or mashing.', specs: { 'Weight': '1 kg', 'Variety': 'Yellow', 'Origin': 'Local' } },
-    { id: 'vg4', name: 'Red Onions', price: 5000, image: 'https://images.unsplash.com/photo-1620574387735-3624d75b2dbc?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.5, description: 'Sweet red onions for salads and cooking.', specs: { 'Weight': '1 kg', 'Color': 'Red', 'Taste': 'Mild' } },
-    { id: 'vg5', name: 'Carrots', price: 4000, image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.7, description: 'Sweet and crunchy carrots, washed.', specs: { 'Weight': '1 kg', 'Washed': 'Yes', 'Origin': 'Zarafshan' } },
-    { id: 'vg6', name: 'Bell Peppers Mix', price: 25000, oldPrice: 30000, image: 'https://images.unsplash.com/photo-1563565375-f3fdf5efe269?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.9, description: 'Mix of red, yellow, and green bell peppers.', specs: { 'Weight': '1 kg', 'Colors': 'Mixed', 'Taste': 'Sweet' } },
-    { id: 'vg7', name: 'Broccoli', price: 18000, image: 'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.8, isNew: true, description: 'Fresh green broccoli heads.', specs: { 'Weight': '1 kg', 'Freshness': 'Daily', 'Origin': 'Local' } },
-    { id: 'vg8', name: 'Garlic Pack', price: 3000, image: 'https://images.unsplash.com/photo-1615477093268-b80c2aec3c73?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.9, description: 'Aromatic garlic bulbs mesh pack.', specs: { 'Count': '3 bulbs', 'Origin': 'China', 'Shelf Life': '3 months' } },
-    { id: 'vg9', name: 'Fresh Spinach', price: 8000, image: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.8, description: 'Young spinach leaves, washed and ready to eat.', specs: { 'Weight': '200g', 'Pack': 'Bag', 'Washed': 'Yes' } },
-    { id: 'vg10', name: 'Eggplant', price: 10000, image: 'https://images.unsplash.com/photo-1615485925694-a0397ae0344d?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.6, description: 'Glossy purple eggplants.', specs: { 'Weight': '1 kg', 'Shape': 'Long', 'Origin': 'Greenhouse' } },
-    { id: 'vg11', name: 'Zucchini', price: 7000, image: 'https://images.unsplash.com/photo-1596350389363-22f3068e4c76?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.7, description: 'Fresh green zucchini squash.', specs: { 'Weight': '1 kg', 'Skin': 'Thin', 'Origin': 'Local' } },
-    { id: 'vg12', name: 'Cauliflower', price: 15000, image: 'https://images.unsplash.com/photo-1568584711075-3d021a7c3d54?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.8, description: 'Dense white cauliflower heads.', specs: { 'Unit': '1 head', 'Approx Wt': '800g', 'Freshness': 'High' } },
-
-    // Fruits
-    { id: 'fr1', name: 'Bananas Premium', price: 22000, image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.9, description: 'Sweet and creamy premium bananas.', specs: { 'Weight': '1 kg', 'Origin': 'Ecuador', 'Ripeness': 'Yellow' } },
-    { id: 'fr2', name: 'Red Apples', price: 15000, oldPrice: 18000, image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.8, description: 'Crisp and sweet red apples.', specs: { 'Weight': '1 kg', 'Variety': 'Fuji', 'Origin': 'Poland' } },
-    { id: 'fr3', name: 'Oranges', price: 20000, image: 'https://images.unsplash.com/photo-1580052614034-c55d20bfee9b?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.7, description: 'Juicy citrus oranges rich in Vitamin C.', specs: { 'Weight': '1 kg', 'Taste': 'Sweet-Sour', 'Origin': 'Turkey' } },
-    { id: 'fr4', name: 'Strawberries Fresh', price: 45000, image: 'https://images.unsplash.com/photo-1464965911861-746a04b4b032?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 5.0, isNew: true, description: 'Sweet seasonal strawberries.', specs: { 'Weight': '500g', 'Pack': 'Punnet', 'Season': 'Summer' } },
-    { id: 'fr5', name: 'Grapes Green', price: 25000, image: 'https://images.unsplash.com/photo-1596363505729-4190a9506133?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.8, description: 'Seedless sweet green grapes.', specs: { 'Weight': '1 kg', 'Seedless': 'Yes', 'Variety': 'Kish-Mish' } },
-    { id: 'fr6', name: 'Watermelon', price: 30000, image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.9, description: 'Sweet and refreshing whole watermelon.', specs: { 'Unit': '1 pc', 'Approx Wt': '5-7 kg', 'Origin': 'Local' } },
-    { id: 'fr7', name: 'Lemon', price: 18000, image: 'https://images.unsplash.com/photo-1590502593747-42a996133562?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.7, description: 'Zesty yellow lemons.', specs: { 'Weight': '1 kg', 'Use': 'Tea/Cooking', 'Origin': 'Turkey' } },
-    { id: 'fr8', name: 'Kiwi Pack', price: 35000, image: 'https://images.unsplash.com/photo-1585059895524-72359e06138a?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.8, description: 'Fuzzy kiwi fruit rich in vitamins.', specs: { 'Weight': '1 kg', 'Origin': 'Iran', 'Taste': 'Sweet-Tart' } },
-    { id: 'fr9', name: 'Pomegranate', price: 28000, image: 'https://images.unsplash.com/photo-1615484477778-ca3b77940c25?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.9, description: 'Deep red pomegranates with juicy seeds.', specs: { 'Weight': '1 kg', 'Variety': 'Qizil', 'Origin': 'Surxondaryo' } },
-    { id: 'fr10', name: 'Avocado Ripe', price: 25000, image: 'https://images.unsplash.com/photo-1523049673856-428689c8ae64?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 5.0, description: 'Creamy Haas avocado ready to eat.', specs: { 'Unit': '1 pc', 'Ripeness': 'Ready', 'Origin': 'Kenya/Peru' } },
+    { id: 'v1', name: 'Pomidor', nameUz: 'Pomidor', nameRu: 'Помидоры', price: 15000, image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.8, description: 'Fresh tomatoes', descriptionUz: 'Yangi pomidorlar', descriptionRu: 'Свежие помидоры', specs: { 'Origin': 'Local' } },
+    { id: 'v2', name: 'Bodring', nameUz: 'Bodring', nameRu: 'Огурцы', price: 12000, image: 'https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?auto=format&fit=crop&q=80&w=600', category: 'Vegetables', rating: 4.7, description: 'Fresh cucumbers', descriptionUz: 'Yangi bodringlar', descriptionRu: 'Свежие огурцы', specs: { 'Origin': 'Local' } },
+    { id: 'f1', name: 'Olma', nameUz: 'Olma', nameRu: 'Яблоки', price: 12000, image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&q=80&w=600', category: 'Fruits', rating: 4.8, description: 'Sweet red apples', descriptionUz: 'Shirin qizil olmalar', descriptionRu: 'Сладкие красные яблоки', specs: { 'Origin': 'Local' } },
+    { id: 'm1', name: 'Mol go\'shti', nameUz: 'Mol go\'shti (lahm)', nameRu: 'Говядина', price: 85000, image: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&q=80&w=600', category: 'Meat Products', rating: 5.0, description: 'Fresh beef meat', descriptionUz: 'Yangi mol go\'shti', descriptionRu: 'Свежая говядина', specs: { 'Weight': '1kg' } },
+    { id: 'c1', name: 'Nivea Creme', nameUz: 'Nivea Kremi', nameRu: 'Крем Nivea', price: 35000, image: 'https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?auto=format&fit=crop&q=80&w=600', category: 'Cosmetics', rating: 4.8, description: 'Moisturizing cream', descriptionUz: 'Namlantiruvchi krem', descriptionRu: 'Увлажняющий крем', specs: { 'Volume': '150ml' } },
+    { id: 'p1', name: 'Chanel No 5', nameUz: 'Chanel No 5', nameRu: 'Chanel No 5', price: 1500000, image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&q=80&w=600', category: 'Perfumes', rating: 5.0, description: 'Classic perfume', descriptionUz: 'Klassik atir', descriptionRu: 'Классические духи', specs: { 'Volume': '50ml' } },
+    { id: 'h1', name: 'Dove Soap', nameUz: 'Dove Sovuni', nameRu: 'Мыло Dove', price: 12000, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=600', category: 'Hygiene', rating: 4.7, description: 'Moisturizing bar soap', descriptionUz: 'Namlantiruvchi sovun', descriptionRu: 'Увлажняющее мыло', specs: { 'Weight': '100g' } },
+    { id: 'hh1', name: 'Ariel Powder', nameUz: 'Ariel Kir Yuvish Kukuni', nameRu: 'Порошок Ariel', price: 45000, image: 'https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&q=80&w=600', category: 'Household', rating: 4.8, description: 'Washing powder', descriptionUz: 'Kir yuvish kukuni', descriptionRu: 'Стиральный порошок', specs: { 'Weight': '3kg' } },
+    { id: 'd1', name: 'Coca-Cola 1.5L', nameUz: 'Coca-Cola 1.5L', nameRu: 'Coca-Cola 1.5L', price: 12000, image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=600', category: 'Drinks', rating: 4.8, description: 'Sparkling drink', descriptionUz: 'Gazli ichimlik', descriptionRu: 'Газированный напиток', specs: { 'Volume': '1.5L' } },
+    { id: 's1', name: 'Choco Pie', nameUz: 'Choco Pie', nameRu: 'Choco Pie', price: 25000, image: 'https://images.unsplash.com/photo-1630360610496-6a5d45d4c947?auto=format&fit=crop&q=80&w=600', category: 'Sweets', rating: 4.9, description: 'Chocolate bun', descriptionUz: 'Shokoladli pechenye', descriptionRu: 'Шоколадное печенье', specs: { 'Pack': '12 pcs' } },
+    { id: 'ch1', name: 'Snickers', nameUz: 'Snickers', nameRu: 'Snickers', price: 8000, image: 'https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&q=80&w=600', category: 'Chocolates', rating: 4.8, description: 'Chocolate bar', descriptionUz: 'Shokoladli baton', descriptionRu: 'Шоколадный батончик', specs: { 'Weight': '50g' } },
+    { id: 'br1', name: 'Tandir Non', nameUz: 'Tandir Non', nameRu: 'Лепешка', price: 4000, image: 'https://images.unsplash.com/photo-1589139178465-950c44365859?auto=format&fit=crop&q=80&w=600', category: 'Bread', rating: 5.0, description: 'Uzbek bread', descriptionUz: 'Tandir non', descriptionRu: 'Узбекская лепешка', specs: { 'Type': 'Tandir' } },
+    { id: 'fl1', name: 'Un 2kg', nameUz: 'Un 2kg', nameRu: 'Мука 2кг', price: 18000, image: 'https://images.unsplash.com/photo-1622668516768-077ae1517c27?auto=format&fit=crop&q=80&w=600', category: 'Flour', rating: 4.7, description: 'Wheat flour', descriptionUz: 'Bug\'doy uni', descriptionRu: 'Пшеничная мука', specs: { 'Weight': '2kg' } },
+    { id: 'dp1', name: 'Pampers 4', nameUz: 'Pampers 4', nameRu: 'Pampers 4', price: 160000, image: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&q=80&w=600', category: 'Diapers', rating: 4.8, description: 'Baby diapers', descriptionUz: 'Bolalar tagliklari', descriptionRu: 'Детские подгузники', specs: { 'Count': '52' } },
+    { id: 'st1', name: 'Daftar', nameUz: 'Daftar (48 varaq)', nameRu: 'Тетрадь (48 л)', price: 4000, image: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&q=80&w=600', category: 'Stationery', rating: 4.5, description: 'Notebook', descriptionUz: 'Daftar katak', descriptionRu: 'Тетрадь в клетку', specs: { 'Pages': '48' } },
+    { id: 'bf1', name: 'Nestle Porridge', nameUz: 'Nestle Bo\'tqasi', nameRu: 'Каша Nestle', price: 35000, image: 'https://images.unsplash.com/photo-1594142106060-64fa79f4c391?auto=format&fit=crop&q=80&w=600', category: 'Baby Food', rating: 4.9, description: 'Baby porridge', descriptionUz: 'Bolalar bo\'tqasi', descriptionRu: 'Детская каша', specs: { 'Weight': '400g' } },
+    { id: 'sl1', name: 'Koreyscha Sabzi', nameUz: 'Koreyscha Sabzi', nameRu: 'Морковча', price: 15000, image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=600', category: 'Salads', rating: 4.8, description: 'Carrot salad', descriptionUz: 'Sabzi salati', descriptionRu: 'Морковный салат', specs: { 'Weight': '500g' } },
+    { id: 'gr1', name: 'Guruch Lazer', nameUz: 'Guruch Lazer', nameRu: 'Рис Лазер', price: 25000, image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80&w=600', category: 'Grains', rating: 4.9, description: 'Lazer rice', descriptionUz: 'Lazer guruchi', descriptionRu: 'Рис Лазер', specs: { 'Weight': '1kg' } },
+    { id: 'ol1', name: 'Kungaboqar Yog\'i', nameUz: 'Kungaboqar Yog\'i', nameRu: 'Подсолнечное Масло', price: 18000, image: 'https://images.unsplash.com/photo-1474979266404-7cadd259c308?auto=format&fit=crop&q=80&w=600', category: 'Oils', rating: 4.7, description: 'Sunflower oil', descriptionUz: 'Kungaboqar yog\'i', descriptionRu: 'Подсолнечное масло', specs: { 'Volume': '1L' } },
+    { id: 't1', name: 'Ahmad Tea', nameUz: 'Ahmad Choy', nameRu: 'Чай Ahmad', price: 25000, image: 'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&q=80&w=600', category: 'Tea', rating: 4.8, description: 'Black tea', descriptionUz: 'Qora choy', descriptionRu: 'Черный чай', specs: { 'Weight': '200g' } },
+    { id: 'sg1', name: 'Doktorskaya', nameUz: 'Doktorskaya Kolbasa', nameRu: 'Колбаса Докторская', price: 65000, image: 'https://images.unsplash.com/photo-1597935749479-72c0576395b2?auto=format&fit=crop&q=80&w=600', category: 'Sausages', rating: 4.7, description: 'Boiled sausage', descriptionUz: 'Pishgan kolbasa', descriptionRu: 'Вареная колбаса', specs: { 'Weight': '1kg' } },
+    { id: 'cf1', name: 'Makalla', nameUz: 'Makalla (Baliq)', nameRu: 'Скумбрия', price: 15000, image: 'https://images.unsplash.com/photo-1584281350027-463ae02c710f?auto=format&fit=crop&q=80&w=600', category: 'Canned Food', rating: 4.6, description: 'Canned fish', descriptionUz: 'Baliq konservasi', descriptionRu: 'Рыбные консервы', specs: { 'Type': 'Fish' } },
+    { id: 'dr1', name: 'Sut 3.2%', nameUz: 'Musaffo Sut 3.2%', nameRu: 'Молоко 3.2%', price: 12000, image: 'https://images.unsplash.com/photo-1628088062854-d1870b4553da?auto=format&fit=crop&q=80&w=600', category: 'Dairy', rating: 4.9, description: 'Milk', descriptionUz: 'Sut', descriptionRu: 'Молоко', specs: { 'Volume': '1L' } },
+    { id: 'sf1', name: 'Pelmen', nameUz: 'Chuchvara', nameRu: 'Пельмени', price: 40000, image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=600', category: 'Semi-finished', rating: 4.7, description: 'Dumplings', descriptionUz: 'Chuchvara', descriptionRu: 'Пельмени', specs: { 'Weight': '1kg' } },
+    { id: 'ps1', name: 'Napilyon', nameUz: 'Napilyon Torti', nameRu: 'Торт Наполеон', price: 80000, image: 'https://images.unsplash.com/photo-1559599189-fe84eea4eb1e?auto=format&fit=crop&q=80&w=600', category: 'Pastries', rating: 4.9, description: 'Napoleon cake', descriptionUz: 'Napilyon torti', descriptionRu: 'Торт Наполеон', specs: { 'Type': 'Cake' } },
+    { id: 'pr1', name: 'Malina Murabbo', nameUz: 'Malinali Murabbo', nameRu: 'Малиновое Варенье', price: 35000, image: 'https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?auto=format&fit=crop&q=80&w=600', category: 'Preserves', rating: 4.9, description: 'Raspberry jam', descriptionUz: 'Malinali murabbo', descriptionRu: 'Малиновое варенье', specs: { 'Weight': '350g' } },
+    { id: 'sp1', name: 'Murch', nameUz: 'Qora Murch', nameRu: 'Черный Перец', price: 5000, image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=600', category: 'Spices', rating: 4.8, description: 'Black pepper', descriptionUz: 'Qora murch', descriptionRu: 'Черный перец', specs: { 'Weight': '50g' } },
+    { id: 'co1', name: 'Jacobs', nameUz: 'Jacobs Monarch', nameRu: 'Jacobs Monarch', price: 45000, image: 'https://images.unsplash.com/photo-1610632380989-680fe40816c6?auto=format&fit=crop&q=80&w=600', category: 'Coffee', rating: 4.7, description: 'Instant coffee', descriptionUz: 'Eruvchan kofe', descriptionRu: 'Растворимый кофе', specs: { 'Weight': '100g' } },
+    { id: 'eg1', name: 'Tuxum (30)', nameUz: 'Tuxum (30 dona)', nameRu: 'Яйца (30 шт)', price: 45000, image: 'https://images.unsplash.com/photo-1582722878654-02fd23747037?auto=format&fit=crop&q=80&w=600', category: 'Eggs', rating: 4.8, description: 'Chicken eggs', descriptionUz: 'Tovuq tuxumi', descriptionRu: 'Куриные яйца', specs: { 'Count': '30' } },
+    { id: 'gf1', name: 'Gift Box', nameUz: 'Sovg\'a To\'plami', nameRu: 'Подарочный Набор', price: 150000, image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&q=80&w=600', category: 'Gifts', rating: 5.0, description: 'Gift set', descriptionUz: 'Sovg\'a to\'plami', descriptionRu: 'Подарочный набор', specs: { 'Type': 'Mixed' } },
+    { id: 'rl1', name: 'Joynomoz', nameUz: 'Joynomoz', nameRu: 'Молельный коврик', price: 80000, image: 'https://images.unsplash.com/photo-1600813735165-42bf9eb5b791?auto=format&fit=crop&q=80&w=600', category: 'Religious', rating: 5.0, description: 'Prayer mat', descriptionUz: 'Joynomoz', descriptionRu: 'Молельный коврик', specs: { 'Origin': 'Turkey' } },
+    { id: 'af1', name: 'Air Wick', nameUz: 'Air Wick', nameRu: 'Air Wick', price: 30000, image: 'https://images.unsplash.com/photo-1588616422325-132d7515dbe3?auto=format&fit=crop&q=80&w=600', category: 'Air Fresheners', rating: 4.6, description: 'Air freshener', descriptionUz: 'Havo tozalagich', descriptionRu: 'Освежитель воздуха', specs: { 'Scent': 'Lavender' } },
+    { id: 'wa1', name: 'Devor Soati', nameUz: 'Devor Soati', nameRu: 'Настенные Часы', price: 120000, image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&q=80&w=600', category: 'Watches', rating: 4.7, description: 'Wall clock', descriptionUz: 'Devor soati', descriptionRu: 'Настенные часы', specs: { 'Type': 'Wall' } },
+    { id: 'ty1', name: 'Lego', nameUz: 'Lego Konstruktor', nameRu: 'Конструктор Lego', price: 250000, image: 'https://images.unsplash.com/photo-1566576912902-1d6db6b8d5a2?auto=format&fit=crop&q=80&w=600', category: 'Toys', rating: 5.0, description: 'Building blocks', descriptionUz: 'Konstruktor', descriptionRu: 'Конструктор', specs: { 'Age': '6+' } },
+    { id: 'cs1', name: 'iPhone Case', nameUz: 'iPhone 15 Chexol', nameRu: 'Чехол iPhone 15', price: 50000, image: 'https://images.unsplash.com/photo-1586105251261-72a756497a11?auto=format&fit=crop&q=80&w=600', category: 'Cases', rating: 4.8, description: 'Phone case', descriptionUz: 'Telefon g\'ilofi', descriptionRu: 'Чехол для телефона', specs: { 'Model': 'iPhone 15' } },
+    { id: 'mg1', name: 'Toshkent Magnit', nameUz: 'Toshkent Magniti', nameRu: 'Магнит Ташкент', price: 15000, image: 'https://images.unsplash.com/photo-1517404215738-15263e9f9178?auto=format&fit=crop&q=80&w=600', category: 'Magnets', rating: 4.5, description: 'Fridge magnet', descriptionUz: 'Muzlatgich magniti', descriptionRu: 'Магнит на холодильник', specs: { 'Type': 'Souvenir' } },
+    { id: 'ik1', name: 'Epson Ink', nameUz: 'Epson Ranglari', nameRu: 'Чернила Epson', price: 80000, image: 'https://images.unsplash.com/photo-1616499370260-485b3e5ed653?auto=format&fit=crop&q=80&w=600', category: 'Inks', rating: 4.8, description: 'Printer ink', descriptionUz: 'Printer bo\'yog\'i', descriptionRu: 'Чернила для принтера', specs: { 'Color': 'Black' } },
+    { id: 'pk1', name: 'Paket', nameUz: 'Paket (100 dona)', nameRu: 'Пакеты (100 шт)', price: 20000, image: 'https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?auto=format&fit=crop&q=80&w=600', category: 'Packages', rating: 4.6, description: 'Plastic bags', descriptionUz: 'Sellofan paketlar', descriptionRu: 'Целлофановые пакеты', specs: { 'Size': 'Medium' } },
+    { id: 'dt1', name: 'Protein Bar', nameUz: 'Protein Baton', nameRu: 'Протеиновый Батончик', price: 25000, image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=600', category: 'Diet', rating: 4.8, description: 'Protein snack', descriptionUz: 'Proteinli tamaddi', descriptionRu: 'Протеиновый перекус', specs: { 'Protein': '20g' } },
+    { id: 'rc1', name: 'Chek Lenta', nameUz: 'Chek Lentasi 80mm', nameRu: 'Чековая Лента 80мм', price: 8000, image: 'https://images.unsplash.com/photo-1628191010376-78ef9d9b68eb?auto=format&fit=crop&q=80&w=600', category: 'Receipts', rating: 4.9, description: 'Thermal paper', descriptionUz: 'Termo qog\'oz', descriptionRu: 'Термобумага', specs: { 'Width': '80mm' } },
+    { id: 'bg1', name: 'Eco Bag', nameUz: 'Eko Sumka', nameRu: 'Эко Сумка', price: 15000, image: 'https://images.unsplash.com/photo-1559563458-527698bf5295?auto=format&fit=crop&q=80&w=600', category: 'Bags', rating: 4.8, description: 'Reusable bag', descriptionUz: 'Qayta ishlatiladigan sumka', descriptionRu: 'Многоразовая сумка', specs: { 'Material': 'Cotton' } },
+    { id: 'cl1', name: 'Domestos', nameUz: 'Domestos', nameRu: 'Domestos', price: 25000, image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=600', category: 'Cleaning', rating: 4.7, description: 'Toilet cleaner', descriptionUz: 'Hojatxona tozalagich', descriptionRu: 'Чистящее средство для утаза', specs: { 'Volume': '1L' } },
+    { id: 'dn1', name: 'Colgate', nameUz: 'Colgate 100ml', nameRu: 'Colgate 100мл', price: 15000, image: 'https://images.unsplash.com/photo-1559591937-e1dc37715011?auto=format&fit=crop&q=80&w=600', category: 'Dental', rating: 4.8, description: 'Toothpaste', descriptionUz: 'Tish pastasi', descriptionRu: 'Зубная паста', specs: { 'Volume': '100ml' } },
+    { id: 'ds1', name: 'Plastik Stakan', nameUz: 'Plastik Stakan (50)', nameRu: 'Пластиковые Стаканы (50)', price: 10000, image: 'https://images.unsplash.com/photo-1533038590840-1cde6b468958?auto=format&fit=crop&q=80&w=600', category: 'Disposable', rating: 4.6, description: 'Disposable cups', descriptionUz: 'Bir martalik stakanlar', descriptionRu: 'Одноразовые стаканы', specs: { 'Count': '50' } },
 ];
 
 async function main() {
     console.log('Start seeding ...');
+
+    // 0. Clean up existing data to avoid ID conflicts
+    await prisma.review.deleteMany({});
+    await prisma.wishlist.deleteMany({});
+    await prisma.orderItem.deleteMany({});
+    await prisma.product.deleteMany({});
+    await prisma.category.deleteMany({});
+    console.log('Existing data cleared');
 
     // 1. Seed Categories AND Products
     for (const cat of categories) {
@@ -108,12 +137,20 @@ async function main() {
 
         const createdCategory = await prisma.category.upsert({
             where: { slug: cat.slug },
-            update: {},
+            update: {
+                name: cat.name,
+                // Ensure we update other fields if they change
+                image: cat.image,
+                nameUz: cat.nameUz,
+                nameRu: cat.nameRu
+            },
             create: {
                 id: cat.id,
                 name: cat.name,
                 image: cat.image,
                 slug: cat.slug,
+                nameUz: cat.nameUz,
+                nameRu: cat.nameRu
             },
         });
 
@@ -124,10 +161,14 @@ async function main() {
             await prisma.product.upsert({
                 where: { id: p.id },
                 update: {
-                    description: p.description,
+                    name: p.name,
+                    description: p.description || "",
+                    descriptionUz: p.descriptionUz,
+                    descriptionRu: p.descriptionRu,
                     specs: specsString,
                     price: p.price,
                     oldPrice: p.oldPrice,
+                    categoryId: createdCategory.id,
                 },
                 create: {
                     id: p.id,
@@ -135,12 +176,16 @@ async function main() {
                     price: p.price,
                     oldPrice: p.oldPrice,
                     image: p.image,
-                    description: p.description,
+                    description: p.description || "",
+                    descriptionUz: p.descriptionUz,
+                    descriptionRu: p.descriptionRu,
                     rating: p.rating,
                     isNew: p.isNew || false,
                     specs: specsString,
-                    stock: 100, // Default stock
+                    stock: 100,
                     categoryId: createdCategory.id,
+                    nameUz: p.nameUz,
+                    nameRu: p.nameRu
                 }
             });
         }
@@ -154,9 +199,7 @@ async function main() {
             email: 'admin@liderbazar.uz',
             name: 'Admin User',
             role: 'ADMIN',
-            // Default password logic would be hashed, but for now simple
-            password: 'securepassword',
-            // In real app, run bcrypt.hash('securepassword', 10)
+            password: 'securepassword', // In real app, hash this
         }
     });
 

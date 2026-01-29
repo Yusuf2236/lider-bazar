@@ -51,18 +51,22 @@ export default function AdminOrders() {
                 </div>
             </header>
 
-            <div className={`${styles.actionBar} glass`}>
+            <div className={styles.actionBar}>
                 <div className={styles.searchBox}>
                     <FaSearch />
                     <input type="text" placeholder="Buyurtma ID yoki mijoz..." />
                 </div>
                 <div className={styles.filters}>
-                    <button className={styles.filterBtn}><FaFilter /> Status</button>
-                    <button className={styles.filterBtn}>Sana</button>
+                    <button className={styles.filterBtn} onClick={() => alert("Filter: Status")}>
+                        <FaFilter /> Status
+                    </button>
+                    <button className={styles.filterBtn} onClick={() => alert("Filter: Sana")}>
+                        Sana
+                    </button>
                 </div>
             </div>
 
-            <section className={`${styles.tableWrapper} glass`}>
+            <section className={styles.tableWrapper}>
                 <table className={styles.table}>
                     <thead>
                         <tr>
@@ -87,9 +91,27 @@ export default function AdminOrders() {
                                     </span>
                                 </td>
                                 <td className={styles.actions}>
-                                    <button className={styles.actionBtn} title="Ko'rish"><FaEye /></button>
-                                    <button className={styles.actionBtn} title="Tasdiqlash"><FaCheck /></button>
-                                    <button className={styles.actionBtn} title="Yetkazish"><FaTruck /></button>
+                                    <button
+                                        className={styles.actionBtn}
+                                        title="Ko'rish"
+                                        onClick={() => alert(`Buyurtma ko'rilmoqda: ${order.id}`)}
+                                    >
+                                        <FaEye />
+                                    </button>
+                                    <button
+                                        className={styles.actionBtn}
+                                        title="Tasdiqlash"
+                                        onClick={() => alert(`Buyurtma tasdiqlandi: ${order.id}`)}
+                                    >
+                                        <FaCheck />
+                                    </button>
+                                    <button
+                                        className={styles.actionBtn}
+                                        title="Yetkazish"
+                                        onClick={() => alert(`Buyurtma yetkazilmoqda: ${order.id}`)}
+                                    >
+                                        <FaTruck />
+                                    </button>
                                 </td>
                             </tr>
                         ))}
