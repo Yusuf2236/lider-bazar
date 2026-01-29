@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaLock, FaGoogle, FaApple } from 'react-icons/fa';
 import Link from 'next/link';
 
 export default function RegisterPage() {
@@ -155,9 +155,39 @@ export default function RegisterPage() {
                             opacity: loading ? 0.7 : 1
                         }}
                     >
-                        {loading ? 'Creating Account...' : 'Sign Up'}
                     </motion.button>
                 </form>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '2rem 0', color: '#86868b' }}>
+                    <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.1)' }}></div>
+                    <span style={{ fontSize: '0.9rem' }}>or continue with</span>
+                    <div style={{ flex: 1, height: '1px', background: 'rgba(255, 255, 255, 0.1)' }}></div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    <button
+                        type="button"
+                        onClick={() => import('next-auth/react').then(mod => mod.signIn('google', { callbackUrl: '/' }))}
+                        style={{
+                            flex: 1, padding: '0.9rem', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.1)',
+                            background: 'rgba(255, 255, 255, 0.05)', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', cursor: 'pointer',
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        <FaGoogle /> Google
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => import('next-auth/react').then(mod => mod.signIn('apple', { callbackUrl: '/' }))}
+                        style={{
+                            flex: 1, padding: '0.9rem', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.1)',
+                            background: 'rgba(255, 255, 255, 0.05)', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', cursor: 'pointer',
+                            transition: 'all 0.2s'
+                        }}
+                    >
+                        <FaApple /> Apple
+                    </button>
+                </div>
 
                 <div style={{ marginTop: '2.5rem', textAlign: 'center' }}>
                     <p style={{ color: '#86868b', fontSize: '0.95rem' }}>
