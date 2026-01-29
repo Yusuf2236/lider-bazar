@@ -23,7 +23,12 @@ const mockOrders = [
     }
 ];
 
+const CustomerMap = dynamic(() => import('@/components/CustomerMap'), { ssr: false });
+import dynamic from 'next/dynamic';
+
 export default function OrderHistory() {
+    const [trackingId, setTrackingId] = React.useState<string | null>(null);
+
     return (
         <div className={styles.container}>
             <div className={`${styles.card} glass`}>
@@ -31,6 +36,13 @@ export default function OrderHistory() {
                     <FaHistory className={styles.icon} />
                     <h1>Buyurtmalar Tarixi</h1>
                 </div>
+
+                {trackingId && (
+                    <div className="mb-4">
+                        <button onClick={() => setTrackingId(null)} className="text-sm text-gray-500 underline mb-2">Close Map</button>
+                        <CustomerMap orderId={trackingId.replace('#', '')} />
+                    </div>
+                )}
 
                 <div className={styles.ordersList}>
                     {mockOrders.map((order) => (
@@ -44,8 +56,20 @@ export default function OrderHistory() {
                                 </span>
                             </div>
                             <div className={styles.orderBody}>
-                                <p className={styles.items}>{order.items.join(', ')}</p>
-                                <p className={styles.total}>{formatPrice(order.total)}</p>
+                                <div className="flex justify-between items-center w-full">
+                                    <div>
+                                        <p className={styles.items}>{order.items.join(', ')}</p>
+                                        <p className={styles.total}>{formatPrice(order.total)}</p>
+                                    </div>
+                                    {order.status !== 'Bajarildi' && (
+                                        <button
+                                            onClick={() => setTrackingId(order.id)}
+                                            className="bg-blue-600 text-white text-xs px-3 py-1 rounded hover:bg-blue-700"
+                                        >
+                                            🗺️ Kuzatish
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))}
