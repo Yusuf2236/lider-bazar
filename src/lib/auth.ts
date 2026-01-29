@@ -10,16 +10,16 @@ export const authOptions: AuthOptions = {
     adapter: PrismaAdapter(prisma),
     secret: process.env.NEXTAUTH_SECRET,
     providers: [
-        ...(process.env.GOOGLE_CLIENT_ID ? [
+        ...((process.env.GOOGLE_CLIENT_ID || process.env.GOOGLE_ID) ? [
             GoogleProvider({
-                clientId: process.env.GOOGLE_CLIENT_ID,
-                clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+                clientId: (process.env.GOOGLE_CLIENT_ID || process.env.GOOGLE_ID)!,
+                clientSecret: (process.env.GOOGLE_CLIENT_SECRET || process.env.GOOGLE_SECRET)!,
             })
         ] : []),
-        ...(process.env.APPLE_ID ? [
+        ...((process.env.APPLE_ID || process.env.APPLE_CLIENT_ID) ? [
             AppleProvider({
-                clientId: process.env.APPLE_ID,
-                clientSecret: process.env.APPLE_SECRET!,
+                clientId: (process.env.APPLE_ID || process.env.APPLE_CLIENT_ID)!,
+                clientSecret: (process.env.APPLE_SECRET || process.env.APPLE_CLIENT_SECRET)!,
             })
         ] : []),
         CredentialsProvider({
