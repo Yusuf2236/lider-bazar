@@ -97,7 +97,6 @@ export default function CheckoutPage() {
                     alert("Order created but response was unexpected. check profile.");
                     router.push('/profile');
                 }
-            } else {
                 if (res.status === 401) {
                     console.error("Session invalid, signing out...");
                     signOut({ callbackUrl: '/login' });
@@ -105,6 +104,14 @@ export default function CheckoutPage() {
                 }
                 const err = await res.text();
                 console.error("Order failed", err);
+
+                if (err.includes("Selected products no longer exist")) {
+                    alert("Savatingizdagi mahsulotlar ma'lumotlari yangilangan. Iltimos, savatni tozalab, mahsulotlarni qaytadan tanlang.");
+                    clearCart();
+                    router.push('/catalog');
+                    return;
+                }
+
                 alert("Order failed: " + err);
             }
         } catch (error) {

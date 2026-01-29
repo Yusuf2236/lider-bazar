@@ -131,27 +131,25 @@ export const POST = apiHandler(async (req: Request) => {
         console.error("[TELEGRAM_ERROR]", tgError);
     }
 
-    // Send to YesPos
+    // Send to YesPos (Only if Card)
     let paymentResponse = null;
-    try {
-        // Construct return/cancel URLs dynamically if possible, or use defaults
-        // Getting origin from request headers if needed, but for now hardcoding or using environment could be safer
-        // User logic: return_url -> /success, cancel_url -> /cancel
-        // We will assume the frontend handles the routing for /success (maybe profile?)
-        const protocol = req.headers.get('x-forwarded-proto') || 'http';
-        const host = req.headers.get('host');
-        const baseUrl = `${protocol}://${host}`;
+    if (paymentMethod === 'card') {
+        try {
+            // Construct return/cancel URLs dynamically if possible, or use defaults
+            const protocol = req.headers.get('x-forwarded-proto') || 'http';
+            const host = req.headers.get('host');
+            const baseUrl = `${protocol}://${host}`;
 
-        paymentResponse = await createYesPosOrder({
-            ...order,
-            return_url: `${baseUrl}/profile`, // User originally suggested /success, but keeping it simple for now
-            cancel_url: `${baseUrl}/checkout`
-        });
-    } catch (ypError) {
-        console.error("[YESPOS_ERROR]", ypError);
-        // We generally still want to return the order even if payment init failed, 
-        // so the user can retry. But if the user requires immediate redirect, this might be an issue.
-        // For now, let's return the order and the error/null payment.
+            paymentResponse = await createYesPosOrder({
+                ...order,
+                return_url: `${baseUrl}/profile`,
+                cancel_url: `${baseUrl}/checkout`
+            });
+        } catch (ypError) {
+            console.error("[YESPOS_ERROR]", ypError);
+            // We generally still want to return the order even if payment init failed, 
+            // so the user can retry.
+        }
     }
 
     return NextResponse.json({
