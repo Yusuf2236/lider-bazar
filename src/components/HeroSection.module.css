@@ -133,9 +133,9 @@
     }
 
     .cardWrapper {
-        min-width: 200px;
-        /* reduced from 300px for mobile carousel */
-        max-width: 200px;
+        min-width: 160px;
+        /* reduced from 200px (was 300px) for mobile carousel */
+        max-width: 160px;
     }
 
     .sectionTitle {

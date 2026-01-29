@@ -183,23 +183,48 @@
 
 @media (max-width: 768px) {
     .content {
-        padding: 0.75rem;
+        padding: 0.5rem;
+        /* Reduced padding */
     }
 
     .title {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        /* Slightly smaller */
+        margin-bottom: 0.25rem;
     }
 
     .price {
-        font-size: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .oldPrice {
+        font-size: 0.75rem;
     }
 
     .addButton {
-        width: 2.2rem;
-        height: 2.2rem;
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.9rem;
+        /* Smaller icon inside */
     }
 
     .rating {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .wishlistButton {
+        width: 1.8rem;
+        height: 1.8rem;
+        font-size: 0.9rem;
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+
+    .discountBadge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        top: 0.5rem;
+        left: 0.5rem;
     }
 }
