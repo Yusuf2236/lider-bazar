@@ -137,4 +137,12 @@
         /* reduced from 300px for mobile carousel */
         max-width: 200px;
     }
+
+    .sectionTitle {
+        font-size: 1.2rem;
+    }
+
+    .tagIcon {
+        font-size: 1.1rem;
+    }
 }
