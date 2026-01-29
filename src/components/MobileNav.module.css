@@ -42,8 +42,7 @@
 
 .curveSvg {
     position: absolute;
-    top: 25px;
-    /* Adjust so the bump starts at bar top */
+    top: 0;
     left: 0;
     width: 100%;
     fill: #1a1a1a;
