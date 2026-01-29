@@ -155,6 +155,7 @@ export default function RegisterPage() {
                             opacity: loading ? 0.7 : 1
                         }}
                     >
+                        {loading ? 'Creating account...' : 'Create Account'}
                     </motion.button>
                 </form>
 
