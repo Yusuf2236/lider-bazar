@@ -155,7 +155,7 @@
     box-shadow: 0 2px 5px rgba(229, 94, 22, 0.4);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
     .container {
         padding: 0 1rem;
         gap: 0.5rem;

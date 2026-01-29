@@ -68,7 +68,7 @@
    Actually image shows: Top (Chat) = Filled Orange. Bottom (Phone) = Outlined or White with Orange Icon.
 /* ... existing styles ... */
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
     .container {
         display: none;
     }

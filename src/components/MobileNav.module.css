@@ -16,7 +16,7 @@
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
     .navContainer {
         display: flex;
     }
