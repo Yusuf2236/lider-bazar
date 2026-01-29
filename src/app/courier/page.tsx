@@ -11,8 +11,10 @@ export default function CourierPage() {
     const [logs, setLogs] = useState<string[]>([]);
     const [cash, setCash] = useState("");
 
+    const addLog = (msg: string) => setLogs(p => [msg, ...p]);
+
     useEffect(() => {
-        socket = io("http://localhost:5000");
+        socket = io("http://localhost:5005");
 
         socket.on("connect", () => {
             addLog("Connected to server");
@@ -23,7 +25,6 @@ export default function CourierPage() {
         }
     }, []);
 
-    const addLog = (msg: string) => setLogs(p => [msg, ...p]);
 
     const startTracking = () => {
         if (!courierId) return alert("Enter Courier ID");

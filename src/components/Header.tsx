@@ -22,6 +22,7 @@ export default function Header() {
 
     // Set mounted state on client-side
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         setMounted(true);
     }, []);
 

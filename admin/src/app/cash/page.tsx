@@ -22,17 +22,17 @@ export default function AdminCashPage() {
 
     useEffect(() => {
         // Fetch historical stats
-        fetch("http://localhost:5000/api/cash")
+        fetch("http://localhost:5005/api/cash")
             .then(r => r.json())
             .then(setStats)
             .catch(console.error);
 
         // Socket updates
-        const socket = io("http://localhost:5000");
+        const socket = io("http://localhost:5005");
         socket.on("cashUpdate-ALL", (data: any) => {
             setLiveUpdates(prev => [data, ...prev]);
             // Refresh stats
-            fetch("http://localhost:5000/api/cash")
+            fetch("http://localhost:5005/api/cash")
                 .then(r => r.json())
                 .then(setStats);
         });
@@ -41,7 +41,7 @@ export default function AdminCashPage() {
     }, []);
 
     const downloadReport = () => {
-        window.open("http://localhost:5000/api/reports/excel", "_blank");
+        window.open("http://localhost:5005/api/reports/excel", "_blank");
     }
 
     return (

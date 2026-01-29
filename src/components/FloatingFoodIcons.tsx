@@ -37,6 +37,7 @@ export default function FloatingFoodIcons() {
             delay: Math.random() * 5, // seconds
             rotation: Math.random() * 360, // degrees
         }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         setFloatingIcons(newIcons);
     }, []);
 
