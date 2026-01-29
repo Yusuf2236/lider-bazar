@@ -172,19 +172,24 @@
 
     .searchContainer {
         display: none;
-        /* Hide search bar on mobile for now to save space, or use icon */
     }
 
     .nav {
         gap: 0.5rem;
     }
 
-    .iconButton {
-        padding: 0.4rem;
-        font-size: 1rem;
-    }
-
+    /* Hide Navigation Links (already hidden, but ensuring) */
     .navLink {
         display: none;
     }
+
+    /* Hide Cart, Profile, and Theme Toggle on Mobile */
+    .cartWrapper,
+    .userMenuWrapper,
+    .nav>button {
+        display: none;
+    }
+
+    /* Keep Language Switcher visible */
+    /* Assuming LanguageSwitcher component returns an element that is NOT one of the above. */
 }
