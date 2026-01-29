@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createYesPosPayment } from "@/lib/yespos";
+import { createYesPosOrder } from "@/lib/yespos";
 import { apiHandler } from "@/lib/api-handler";
 
 export const POST = apiHandler(async (req: Request) => {
@@ -17,7 +17,12 @@ export const POST = apiHandler(async (req: Request) => {
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
     const callbackUrl = `${baseUrl}/api/payment/webhook`;
 
-    const paymentData = await createYesPosPayment(amount, order_id, callbackUrl);
+    const paymentData = await createYesPosOrder({
+        total: amount,
+        id: order_id,
+        return_url: `${baseUrl}/profile`,
+        cancel_url: `${baseUrl}/checkout`
+    });
 
     return NextResponse.json(paymentData);
 });
