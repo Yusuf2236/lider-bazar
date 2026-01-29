@@ -101,10 +101,9 @@ export default function RegisterPage() {
                         <FaEnvelope style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#86868b' }} />
                         <input
                             type="email"
-                            placeholder="Email address"
+                            placeholder="Email address (Optional)"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            required
                             style={{
                                 width: '100%',
                                 padding: '1rem 1rem 1rem 3rem',

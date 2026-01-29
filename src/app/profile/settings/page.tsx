@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FaUser, FaGlobe, FaMoon, FaSun, FaBell, FaSave } from 'react-icons/fa';
+import { FaUser, FaGlobe, FaMoon, FaSun, FaBell, FaSave, FaSignOutAlt } from 'react-icons/fa';
+import { signOut } from 'next-auth/react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useToast } from '@/context/ToastContext';
@@ -122,6 +123,26 @@ export default function SettingsPage() {
                 <footer className={styles.footer}>
                     <button className={styles.saveBtn} onClick={handleSave}>
                         <FaSave /> {t.settings.saveChanges}
+                    </button>
+                    <button
+                        className={styles.logoutBtn}
+                        onClick={() => signOut({ callbackUrl: '/' })}
+                        style={{
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            color: '#ef4444',
+                            border: '1px solid rgba(239, 68, 68, 0.2)',
+                            padding: '1rem 2rem',
+                            borderRadius: '12px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            fontSize: '1rem',
+                            fontWeight: '600',
+                            marginLeft: '1rem'
+                        }}
+                    >
+                        <FaSignOutAlt /> Profildan chiqish
                     </button>
                 </footer>
             </div>
