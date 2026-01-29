@@ -227,4 +227,15 @@
         top: 0.5rem;
         left: 0.5rem;
     }
+
+    /* Shrink the image visually on mobile */
+    .imageLink {
+        padding-top: 75%;
+        /* Reduced height (was 90%) */
+    }
+
+    .imageWrapper {
+        padding: 2rem;
+        /* Increased padding to shrink image (was 1.5rem) */
+    }
 }
