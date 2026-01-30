@@ -137,7 +137,7 @@ export default function CheckoutPage() {
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className={styles.card}
+                    className={`${styles.card} ${styles.deliverySection}`}
                 >
                     <h2 className={styles.cardHeader}>
                         <FaMapMarkerAlt style={{ color: '#FF9F0A' }} /> {t.checkout.deliveryDetails}
@@ -221,7 +221,7 @@ export default function CheckoutPage() {
                 <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className={styles.card}
+                    className={`${styles.card} ${styles.summarySection}`}
                     style={{ height: 'fit-content' }}
                 >
                     <h2 className={styles.cardHeader} style={{ marginBottom: '1.5rem' }}>{t.checkout.yourOrder}</h2>

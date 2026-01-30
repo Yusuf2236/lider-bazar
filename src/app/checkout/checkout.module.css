@@ -140,6 +140,14 @@
     padding-right: 0.5rem;
 }
 
+.deliverySection {
+    /* Desktop: default order */
+}
+
+.summarySection {
+    /* Desktop: default order */
+}
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .container {
@@ -153,9 +161,17 @@
     }
 
     .grid {
-        grid-template-columns: 1fr;
-        /* Stack vertically */
+        display: flex;
+        flex-direction: column;
         gap: 1.5rem;
+    }
+
+    .deliverySection {
+        order: 2;
+    }
+
+    .summarySection {
+        order: 1;
     }
 
     .card {
