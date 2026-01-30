@@ -6,12 +6,15 @@ import { motion } from 'framer-motion';
 import Skeleton from '@/components/ui/Skeleton';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaHeart, FaTrash, FaShoppingCart } from 'react-icons/fa';
+import { FaHeart, FaTrash, FaShoppingCart, FaArrowLeft } from 'react-icons/fa';
 import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 
+import { useRouter } from 'next/navigation';
+
 export default function WishlistPage() {
     const { data: session } = useSession();
+    const router = useRouter();
     const { addToCart } = useCart();
     const [wishlist, setWishlist] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -56,6 +59,9 @@ export default function WishlistPage() {
 
     return (
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem' }}>
+            <button onClick={() => router.back()} style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', marginBottom: '1rem', color: 'var(--foreground)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <FaArrowLeft /> Back
+            </button>
             <h1 style={{ fontSize: '2rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <FaHeart style={{ color: '#FF3B30' }} /> My Wishlist
             </h1>

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FaHistory, FaCheckCircle, FaClock } from 'react-icons/fa';
+import { FaHistory, FaCheckCircle, FaClock, FaArrowLeft } from 'react-icons/fa';
 import { formatPrice } from '@/lib/utils';
 import styles from './history.module.css';
 
@@ -26,13 +26,19 @@ const mockOrders = [
 const CustomerMap = dynamic(() => import('@/components/CustomerMap'), { ssr: false });
 import dynamic from 'next/dynamic';
 
+import { useRouter } from 'next/navigation';
+
 export default function OrderHistory() {
+    const router = useRouter();
     const [trackingId, setTrackingId] = React.useState<string | null>(null);
 
     return (
         <div className={styles.container}>
             <div className={`${styles.card} glass`}>
                 <div className={styles.header}>
+                    <button onClick={() => router.back()} style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', marginRight: '1rem', color: 'var(--foreground)' }}>
+                        <FaArrowLeft />
+                    </button>
                     <FaHistory className={styles.icon} />
                     <h1>Buyurtmalar Tarixi</h1>
                 </div>

@@ -1,17 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FaUser, FaGlobe, FaMoon, FaSun, FaBell, FaSave, FaSignOutAlt } from 'react-icons/fa';
+import { FaUser, FaGlobe, FaMoon, FaSun, FaBell, FaSave, FaSignOutAlt, FaArrowLeft } from 'react-icons/fa';
 import { signOut } from 'next-auth/react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useToast } from '@/context/ToastContext';
 import styles from './settings.module.css';
 
+import { useRouter } from 'next/navigation';
+
 export default function SettingsPage() {
     const { locale, setLocale, t } = useLanguage();
     const { theme, toggleTheme } = useTheme();
     const { addToast } = useToast();
+    const router = useRouter();
 
     // Mock user state
     const [user, setUser] = useState({
@@ -30,7 +33,10 @@ export default function SettingsPage() {
         <div className={styles.container}>
             <div className={`${styles.card} glass`}>
                 <header className={styles.header}>
-                    <h1>{t.settings.title}</h1>
+                    <button onClick={() => router.back()} style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', marginRight: '1rem', color: 'var(--foreground)', display: 'flex', alignItems: 'center' }}>
+                        <FaArrowLeft />
+                    </button>
+                    <h1 style={{ margin: 0 }}>{t.settings.title}</h1>
                 </header>
 
                 <div className={styles.sections}>
