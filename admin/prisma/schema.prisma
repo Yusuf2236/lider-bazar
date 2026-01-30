@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:../../prisma/dev.db"
 }
 
 model User {
@@ -69,6 +69,7 @@ model Category {
   nameRu   String?
   slug     String    @unique
   image    String
+  externalId String? @unique // ID from YesPos
   products Product[]
 }
 
@@ -90,6 +91,8 @@ model Product {
 
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
+  
+  externalId  String?  @unique // ID from YesPos
 
   orderItems OrderItem[]
 

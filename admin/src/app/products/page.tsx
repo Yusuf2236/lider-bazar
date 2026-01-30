@@ -122,6 +122,27 @@ export default function ProductsPage() {
         setShowModal(true);
     };
 
+    const [syncing, setSyncing] = useState(false);
+
+    const handleSync = async () => {
+        setSyncing(true);
+        try {
+            const res = await fetch('/api/sync-yespos', { method: 'POST' });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                alert(`Sync successful! Categories: ${data.stats.categories}, Products: ${data.stats.products}`);
+                fetchProducts();
+            } else {
+                alert('Sync failed: ' + (data.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error syncing with YesPos');
+        } finally {
+            setSyncing(false);
+        }
+    };
+
     return (
         <div className={styles.container}>
             <header className={styles.header}>
@@ -130,6 +151,14 @@ export default function ProductsPage() {
                     <p className={styles.subtitle}>Add, edit, and keep track of your product inventory.</p>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem' }}>
+                    <button
+                        className={styles.addBtn}
+                        onClick={handleSync}
+                        disabled={syncing}
+                        style={{ background: '#2196F3' }}
+                    >
+                        {syncing ? 'Syncing...' : 'Sync YesPos'}
+                    </button>
                     <button className={styles.addBtn} onClick={openAddModal}>
                         <FaPlus /> Add New Product
                     </button>

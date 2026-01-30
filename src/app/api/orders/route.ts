@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { sendTelegramMessage } from "@/lib/telegram";
-import { createYesPosOrder } from "@/lib/yespos";
+import { yesPosClient } from "@/lib/yespos";
 
 export const dynamic = 'force-dynamic';
 
@@ -68,13 +68,13 @@ export const POST = apiHandler(async (req: Request) => {
         return new NextResponse("No items in order", { status: 400 });
     }
 
-    // Validate products exist
+    // Validate products exist and get externalId
     const productIds = items.map((item: any) => item.id);
     const validProducts = await prisma.product.findMany({
         where: {
             id: { in: productIds }
         },
-        select: { id: true }
+        select: { id: true, externalId: true, price: true }
     });
 
     const validProductIds = new Set(validProducts.map((p: any) => p.id));
@@ -131,30 +131,47 @@ export const POST = apiHandler(async (req: Request) => {
         console.error("[TELEGRAM_ERROR]", tgError);
     }
 
-    // Send to YesPos (Only if Card)
-    let paymentResponse = null;
-    if (paymentMethod === 'card') {
-        try {
-            // Construct return/cancel URLs dynamically if possible, or use defaults
-            const protocol = req.headers.get('x-forwarded-proto') || 'http';
-            const host = req.headers.get('host');
-            const baseUrl = `${protocol}://${host}`;
+    // Send to YesPos
+    let yesPosResponse = null;
+    try {
+        // Prepare YesPos payload
+        const yesPosItems = validItems.map((item: any) => {
+            const product = validProducts.find((p) => p.id === item.id);
+            // If explicit externalId is missing, we can't sync this item properly.
+            // But if we fail, the whole order sync fails.
+            // We'll filter out items without externalId or pass 0? 
+            // Better to filter valid items.
+            return {
+                item: parseInt(product?.externalId || '0'),
+                qty: item.quantity,
+                price: item.price
+            };
+        }).filter((i: any) => i.item !== 0);
 
-            paymentResponse = await createYesPosOrder({
-                ...order,
-                return_url: `${baseUrl}/profile`,
-                cancel_url: `${baseUrl}/checkout`
+        if (yesPosItems.length > 0) {
+            // 1=Cash, 2=Card. 
+            const paymentId = paymentMethod === 'card' ? 2 : 1;
+
+            yesPosResponse = await yesPosClient.createOrder({
+                type: 1, // Order
+                note: `Order #${order.id.slice(-6).toUpperCase()} from Website. Phone: ${phone}`,
+                items: yesPosItems,
+                payments: [
+                    {
+                        payment_id: paymentId,
+                        value: total // Assuming total matches exactly sum of items
+                    }
+                ]
             });
-        } catch (ypError) {
-            console.error("[YESPOS_ERROR]", ypError);
-            // We generally still want to return the order even if payment init failed, 
-            // so the user can retry.
+            console.log("YesPos Order Created:", yesPosResponse);
         }
+    } catch (ypError) {
+        console.error("[YESPOS_ERROR]", ypError);
     }
 
     return NextResponse.json({
         order,
-        payment: paymentResponse
+        yesPos: yesPosResponse
     });
 });
 
