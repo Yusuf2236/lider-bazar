@@ -12,6 +12,8 @@ import Skeleton from '@/components/ui/Skeleton';
 
 import { useLanguage } from '@/context/LanguageContext';
 
+import styles from './checkout.module.css';
+
 export default function CheckoutPage() {
     const { cart, cartTotal, clearCart } = useCart();
     const { data: session, status } = useSession();
@@ -34,7 +36,6 @@ export default function CheckoutPage() {
 
     const handleGetLocation = () => {
         if (!navigator.geolocation) {
-            // Silently fail or minimal UI indication if needed, but removing alert as requested
             return;
         }
 
@@ -79,17 +80,9 @@ export default function CheckoutPage() {
             if (res.ok) {
                 const data = await res.json();
 
-                // If we get a payment response with a URL (or similar) from YES POS, redirect.
-                // Note: The structure of YES POS response might vary, usually it has a link or we just redirect to a constructed URL.
-                // Assuming payment object resembles { payment_url: "..." } or similar if YES POS returns one.
-                // If YES POS returns raw data, we might need to inspect it.
-                // The user prompt says: "Checkout -> YES POS sahifasiga redirect".
-
                 if (data.payment && data.payment.payment_url) {
-                    // Redirect to YES POS
                     window.location.href = data.payment.payment_url;
                 } else if (data.order) {
-                    // Standard success without redirect (e.g. Cash)
                     clearCart();
                     router.push('/profile');
                 } else {
@@ -97,21 +90,20 @@ export default function CheckoutPage() {
                     alert("Order created but response was unexpected. check profile.");
                     router.push('/profile');
                 }
+
                 if (res.status === 401) {
-                    console.error("Session invalid, signing out...");
                     signOut({ callbackUrl: '/login' });
                     return;
                 }
+            } else {
                 const err = await res.text();
-                console.error("Order failed", err);
-
+                // Handle specific errors
                 if (err.includes("Selected products no longer exist")) {
                     alert("Savatingizdagi mahsulotlar ma'lumotlari yangilangan. Iltimos, savatni tozalab, mahsulotlarni qaytadan tanlang.");
                     clearCart();
                     router.push('/catalog');
                     return;
                 }
-
                 alert("Order failed: " + err);
             }
         } catch (error) {
@@ -137,32 +129,28 @@ export default function CheckoutPage() {
     }
 
     return (
-        <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '2rem 1rem' }}>
-            <h1 style={{ fontSize: '2rem', marginBottom: '2rem', fontWeight: 'bold' }}>{t.checkout.title}</h1>
+        <div className={styles.container}>
+            <h1 className={styles.title}>{t.checkout.title}</h1>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 1fr', gap: '2rem' }}>
+            <div className={styles.grid}>
                 {/* Form Section */}
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    style={{ background: 'var(--card-bg)', padding: '2rem', borderRadius: '24px', border: '1px solid var(--border)' }}
+                    className={styles.card}
                 >
-                    <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <h2 className={styles.cardHeader}>
                         <FaMapMarkerAlt style={{ color: '#FF9F0A' }} /> {t.checkout.deliveryDetails}
                     </h2>
 
-                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    <form onSubmit={handleSubmit} className={styles.form}>
                         {/* Geolocation Button */}
-                        <div style={{ marginBottom: '1rem' }}>
+                        <div className={styles.inputGroup}>
                             <button
                                 type="button"
                                 onClick={handleGetLocation}
                                 disabled={detectingLocation}
-                                style={{
-                                    width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid var(--border)',
-                                    background: 'rgba(50, 215, 75, 0.1)', color: '#32d74b', cursor: 'pointer',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'
-                                }}
+                                className={styles.locationBtn}
                             >
                                 {detectingLocation ? <FaSpinner className="spin" /> : <FaMapMarkerAlt />}
                                 {detectingLocation ? t.checkout.detectingLocation : formData.location ? t.checkout.locationDetected : t.checkout.getLocation}
@@ -178,10 +166,7 @@ export default function CheckoutPage() {
                                 placeholder="..."
                                 value={formData.address}
                                 onChange={e => setFormData({ ...formData, address: e.target.value })}
-                                style={{
-                                    width: '100%', padding: '1rem', borderRadius: '12px', border: '1px solid var(--border)',
-                                    background: 'rgba(0,0,0,0.2)', color: 'var(--foreground)', fontSize: '1rem', outline: 'none'
-                                }}
+                                className={styles.input}
                             />
                         </div>
 
@@ -195,24 +180,17 @@ export default function CheckoutPage() {
                                     placeholder="+998 90 123 45 67"
                                     value={formData.phone}
                                     onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                                    style={{
-                                        width: '100%', padding: '1rem 1rem 1rem 3rem', borderRadius: '12px', border: '1px solid var(--border)',
-                                        background: 'rgba(0,0,0,0.2)', color: 'var(--foreground)', fontSize: '1rem', outline: 'none'
-                                    }}
+                                    className={`${styles.input} ${styles.inputWithIcon}`}
                                 />
                             </div>
                         </div>
 
-                        <div style={{ marginBottom: '1rem' }}>
+                        <div className={styles.inputGroup}>
                             <label style={{ display: 'block', marginBottom: '0.5rem', color: '#888' }}>{t.checkout.paymentMethod}</label>
                             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                                 <div
                                     onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'cash' }))}
-                                    style={{
-                                        flex: 1, padding: '1rem', borderRadius: '12px', border: `1px solid ${formData.paymentMethod === 'cash' ? '#32d74b' : 'var(--border)'}`,
-                                        background: formData.paymentMethod === 'cash' ? 'rgba(50, 215, 75, 0.1)' : 'rgba(0,0,0,0.2)',
-                                        cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: '120px'
-                                    }}
+                                    className={`${styles.paymentOption} ${formData.paymentMethod === 'cash' ? styles.activeCash : ''}`}
                                 >
                                     <FaMoneyBillWave style={{ color: '#32d74b' }} />
                                     <span>{t.checkout.cashOnDelivery}</span>
@@ -220,11 +198,7 @@ export default function CheckoutPage() {
                                 </div>
                                 <div
                                     onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'card' }))}
-                                    style={{
-                                        flex: 1, padding: '1rem', borderRadius: '12px', border: `1px solid ${formData.paymentMethod === 'card' ? '#FF9F0A' : 'var(--border)'}`,
-                                        background: formData.paymentMethod === 'card' ? 'rgba(255, 159, 10, 0.1)' : 'rgba(0,0,0,0.2)',
-                                        cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', minWidth: '120px'
-                                    }}
+                                    className={`${styles.paymentOption} ${formData.paymentMethod === 'card' ? styles.activeCard : ''}`}
                                 >
                                     <FaMoneyBillWave style={{ color: '#FF9F0A' }} />
                                     <span>Card (Click/Payme)</span>
@@ -236,14 +210,7 @@ export default function CheckoutPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            style={{
-                                marginTop: '1rem',
-                                background: 'linear-gradient(135deg, #32d74b 0%, #28c840 100%)',
-                                color: '#fff', padding: '1.2rem', borderRadius: '16px',
-                                fontSize: '1.2rem', fontWeight: 'bold', border: 'none', cursor: loading ? 'wait' : 'pointer',
-                                display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem',
-                                boxShadow: '0 4px 20px rgba(50, 215, 75, 0.3)'
-                            }}
+                            className={styles.submitBtn}
                         >
                             {loading ? <FaSpinner className="spin" /> : <><FaCheckCircle /> {t.checkout.confirmOrder}</>}
                         </button>
@@ -254,13 +221,14 @@ export default function CheckoutPage() {
                 <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    style={{ background: 'var(--card-bg)', padding: '2rem', borderRadius: '24px', border: '1px solid var(--border)', height: 'fit-content' }}
+                    className={styles.card}
+                    style={{ height: 'fit-content' }}
                 >
-                    <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>{t.checkout.yourOrder}</h2>
-                    <div style={{ maxHeight: '400px', overflowY: 'auto', marginBottom: '1.5rem', paddingRight: '0.5rem' }}>
+                    <h2 className={styles.cardHeader} style={{ marginBottom: '1.5rem' }}>{t.checkout.yourOrder}</h2>
+                    <div className={styles.summaryScroll}>
                         {cart.map(item => (
-                            <div key={item.id} style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}>
-                                <div style={{ position: 'relative', width: '60px', height: '60px', borderRadius: '10px', overflow: 'hidden' }}>
+                            <div key={item.id} className={styles.summaryItem}>
+                                <div style={{ position: 'relative', width: '60px', height: '60px', borderRadius: '10px', overflow: 'hidden', flexShrink: 0 }}>
                                     <Image src={item.image} alt={item.name} fill style={{ objectFit: 'cover' }} />
                                 </div>
                                 <div style={{ flex: 1 }}>
