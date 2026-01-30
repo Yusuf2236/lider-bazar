@@ -1,0 +1,119 @@
+/* src/app/profile/profile.module.css */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    min-height: 80vh;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.avatarContainer {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #FF9F0A, #FF3B30);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: #fff;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 15px rgba(255, 159, 10, 0.4);
+}
+
+.name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.email {
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.menuItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.menuItem:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.menuLeft {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.icon {
+    font-size: 1.4rem;
+    color: #FF9F0A;
+}
+
+.arrow {
+    color: #888;
+}
+
+/* Specific button styles */
+.logoutBtn {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.logoutBtn .icon,
+.logoutBtn .arrow {
+    color: #ef4444;
+}
+
+.adminBtn {
+    background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
+    border: 1px solid #333;
+}
+
+.adminBtn .icon {
+    color: #fff;
+}
+
+.adminBtn .menuLeft {
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem 1rem;
+    }
+
+    .menuItem {
+        padding: 1.25rem;
+    }
+}
