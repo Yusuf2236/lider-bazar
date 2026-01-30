@@ -24,14 +24,14 @@ export default function CatalogPage() {
 
     return (
         <div className={styles.container}>
+            <SearchFilter onSearch={setSearchTerm} placeholder="Kategoriya qidirish..." />
+
             <header className={styles.header}>
                 <h1 className={styles.title}>
                     <span className={styles.highlight}>{t.header.catalog}</span>
                 </h1>
                 <p className={styles.subtitle}>{filteredCategories.length} {t.catalog?.itemsFound || 'kategoriyalar topildi'}</p>
             </header>
-
-            <SearchFilter onSearch={setSearchTerm} placeholder="Kategoriya qidirish..." />
 
             <div className={styles.productGrid}>
                 {filteredCategories.map(category => (

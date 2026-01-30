@@ -1,3 +1,4 @@
+/* Container & Header */
 .container {
     padding: 6rem 2rem;
     max-width: 1200px;
@@ -28,6 +29,7 @@
     font-size: 1.1rem;
 }
 
+/* Grid */
 .productGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -44,22 +46,7 @@
     color: var(--gray-400);
 }
 
-@media (max-width: 768px) {
-    .container {
-        padding: 5rem 1rem;
-    }
-
-    .title {
-        font-size: 2rem;
-    }
-
-    .productGrid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-        /* Tighter gap to allow wider cards/images */
-    }
-}
-
+/* Category Card (Desktop Default) */
 .categoryCard {
     position: relative;
     border-radius: 20px;
@@ -134,4 +121,50 @@
 .categoryCard:hover .viewLink {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Mobile Overrides */
+@media (max-width: 768px) {
+    .container {
+        padding: 5rem 1rem;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    .productGrid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+
+    /* Adjust card height for 3-column layout */
+    .categoryCard {
+        height: 180px;
+        /* Reduced specific height for mobile */
+    }
+
+    .imageWrapper {
+        height: 120px;
+        /* Reduced image height */
+    }
+
+    .categoryContent {
+        padding: 0.5rem;
+    }
+
+    .categoryName {
+        font-size: 0.85rem;
+        /* Smaller font */
+        margin-bottom: 0;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .viewLink {
+        display: none;
+        /* Hide link text on small grid */
+    }
 }
