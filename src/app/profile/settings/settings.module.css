@@ -192,19 +192,19 @@ input:checked+.slider:before {
 
 @media (max-width: 768px) {
     .container {
-        padding: 5rem 1rem;
+        padding: 2rem 1rem;
     }
 
     .card {
-        padding: 1.5rem;
+        padding: 1.25rem;
+    }
+
+    .header h1 {
+        font-size: 1.75rem;
     }
 
     .settingsGrid {
         grid-template-columns: 1fr;
         gap: 1rem;
-    }
-
-    .title {
-        font-size: 2rem;
     }
 }
