@@ -86,9 +86,13 @@ export default function AdminOrders() {
                                 <td>{order.date}</td>
                                 <td className={styles.total}>{order.total.toLocaleString()} so'm</td>
                                 <td>
-                                    <span className={`${styles.statusBadge} ${getStatusStyle(order.status)}`}>
-                                        {order.status}
-                                    </span>
+                                    {order.status === 'O\'chirilgan' ? (
+                                        <span className="text-gray-500">O&apos;chirilgan</span>
+                                    ) : (
+                                        <span className={`${styles.statusBadge} ${getStatusStyle(order.status)}`}>
+                                            {order.status}
+                                        </span>
+                                    )}
                                 </td>
                                 <td className={styles.actions}>
                                     <button

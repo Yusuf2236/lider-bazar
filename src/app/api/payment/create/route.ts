@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createYesPosOrder } from "@/lib/yespos";
+import { yesPosClient } from "@/lib/yespos";
 import { apiHandler } from "@/lib/api-handler";
 
 export const POST = apiHandler(async (req: Request) => {
@@ -9,20 +9,10 @@ export const POST = apiHandler(async (req: Request) => {
         return new NextResponse("Missing required fields", { status: 400 });
     }
 
-    // Ideally, we should validate order_id against our DB first.
+    // Payment integration pending specific API documentation for Payment Gateway URL generation.
+    // Currently YesPosClient only supports Order Synchronization (Marketplace).
 
-    // Construct Webhook URL
-    // In dev, localhost won't work for callbacks unless we use ngrok.
-    // We'll use NEXTAUTH_URL or a specific env var.
-    const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-    const callbackUrl = `${baseUrl}/api/payment/webhook`;
-
-    const paymentData = await createYesPosOrder({
-        total: amount,
-        id: order_id,
-        return_url: `${baseUrl}/profile`,
-        cancel_url: `${baseUrl}/checkout`
+    return NextResponse.json({
+        url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/checkout?error=PaymentNotImplemented`
     });
-
-    return NextResponse.json(paymentData);
 });

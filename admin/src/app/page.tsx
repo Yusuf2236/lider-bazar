@@ -132,7 +132,7 @@ export default async function AdminDashboard() {
                 ))}
                 {stats.lowStockProducts.length === 0 && (
                   <tr>
-                    <td colSpan={3} style={{ textAlign: 'center', color: 'var(--gray-400)' }}>All stock levels healthy</td>
+                    <td colSpan={3} style={{ textAlign: 'center', color: 'var(--gray-400)' }}><p className="text-gray-500 text-sm">Jami bo&apos;lib to&apos;langan</p></td>
                   </tr>
                 )}
               </tbody>

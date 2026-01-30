@@ -47,7 +47,7 @@ export default function AdminCashPage() {
     return (
         <div className="p-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">💰 Cash Control</h1>
+                <h1 className="text-2xl font-bold">Kassa (&quot;Cash&quot;)</h1>
                 <button onClick={downloadReport} className="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 transition">
                     📥 Download Excel Report
                 </button>

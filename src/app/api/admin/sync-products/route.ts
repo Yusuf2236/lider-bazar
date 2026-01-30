@@ -1,6 +1,7 @@
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getYesPosProducts, YesPosProduct } from "@/lib/yespos";
+import { yesPosClient } from "@/lib/yespos";
 import { apiHandler } from "@/lib/api-handler";
 
 export const dynamic = 'force-dynamic';

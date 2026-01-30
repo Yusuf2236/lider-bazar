@@ -17,6 +17,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const savedLocale = localStorage.getItem('locale') as Locale;
         if (savedLocale && ['uz', 'ru', 'en'].includes(savedLocale)) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setLocale(savedLocale);
         }
     }, []);

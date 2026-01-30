@@ -24,7 +24,7 @@ export default function ReportsPage() {
                         <span>Net Revenue</span>
                         <FaChartLine />
                     </div>
-                    <div className={styles.statValue}>45 200 000 so'm</div>
+                    <div className={styles.statValue}>45 200 000 so&apos;m</div>
                     <div className={`${styles.statTrend} ${styles.up}`}>
                         <FaArrowUp /> 12.5% vs last month
                     </div>
@@ -35,7 +35,7 @@ export default function ReportsPage() {
                         <span>Average Order Value</span>
                         <FaChartLine />
                     </div>
-                    <div className={styles.statValue}>125 000 so'm</div>
+                    <div className={styles.statValue}>125 000 so&apos;m</div>
                     <div className={`${styles.statTrend} ${styles.up}`}>
                         <FaArrowUp /> 4.2% vs last month
                     </div>

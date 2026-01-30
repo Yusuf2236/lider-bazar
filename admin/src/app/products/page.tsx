@@ -201,6 +201,7 @@ export default function ProductsPage() {
                                 <td>{Number(product.price).toLocaleString()} so'm</td>
                                 <td className={styles.stockCell}>{product.stock}</td>
                                 <td>
+                                    <span className="text-gray-500">O&apos;chirilgan</span>
                                     <span className={`${styles.statusLabel} ${styles[product.status] || styles.InStock}`}>
                                         {Number(product.stock) > 0 ? 'In Stock' : 'Out of Stock'}
                                     </span>

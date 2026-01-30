@@ -71,6 +71,7 @@ export class YesPosClient {
             headers: {
                 'Content-Type': 'application/json',
                 'API-Key': this.apiKey,
+                'AppName': 'YesPOS',
             },
         });
     }

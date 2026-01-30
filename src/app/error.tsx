@@ -34,6 +34,7 @@ export default function Error({
             </p>
             <button
                 onClick={
+                    // Try again or go back to the home page if you're still having trouble.
                     // Attempt to recover by trying to re-render the segment
                     () => reset()
                 }

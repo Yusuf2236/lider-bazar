@@ -34,7 +34,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <div className={styles.header}>
                     <div className={styles.titleWrapper}>
                         <FaShoppingBag className={styles.bagIcon} />
-                        <h2 className={styles.title}>Savatcha</h2>
+                        <p className="text-gray-500">Savat bo&apos;sh</p>
                     </div>
                     <button className={styles.closeBtn} onClick={onClose}>
                         <FaTimes />
@@ -55,7 +55,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                                     </div>
                                     <div className={styles.itemInfo}>
                                         <h3 className={styles.itemName}>{item.name}</h3>
-                                        <p className={styles.itemPrice}>{formatPrice(item.price)}</p>
+                                        <p className="text-sm font-medium">{item.price.toLocaleString()} so&apos;m</p>
                                         <div className={styles.quantityControls}>
                                             <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
                                             <span>{item.quantity}</span>
