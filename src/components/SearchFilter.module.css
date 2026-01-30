@@ -1,0 +1,77 @@
+.container {
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--background);
+    /* Match theme background */
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.wrapper {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 600px;
+    margin: 0 auto;
+    /* Center it */
+}
+
+.inputGroup {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: var(--card-bg);
+    /* Use card background for input area */
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 0 1rem;
+    height: 48px;
+    /* Touch friendly height */
+    transition: all 0.3s ease;
+}
+
+.inputGroup:focus-within {
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 2px rgba(229, 94, 22, 0.1);
+}
+
+.icon {
+    color: var(--gray-400);
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: var(--foreground);
+    width: 100%;
+}
+
+.input::placeholder {
+    color: var(--gray-400);
+}
+
+.filterButton {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--foreground);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filterButton:active {
+    transform: scale(0.95);
+    background: var(--glass-bg);
+}
