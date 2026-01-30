@@ -140,31 +140,53 @@
 
     /* Adjust card height for 3-column layout */
     .categoryCard {
-        height: 180px;
-        /* Reduced specific height for mobile */
+        height: auto;
+        /* Let content dictate height, or keep fixed if strictly needed */
+        min-height: 160px;
+        flex-direction: column;
+        /* Ensure vertical stack */
     }
 
     .imageWrapper {
-        height: 120px;
-        /* Reduced image height */
+        height: 100px;
+        /* Smaller image area */
+        flex-shrink: 0;
     }
 
+    /* Remove overlay style for mobile */
     .categoryContent {
         padding: 0.5rem;
+        position: relative;
+        /* No longer absolute over image */
+        background: transparent;
+        /* No gradient */
+        justify-content: flex-start;
+        flex: 1;
     }
 
     .categoryName {
-        font-size: 0.85rem;
-        /* Smaller font */
+        font-size: 0.75rem;
+        /* Even smaller for dense grid */
         margin-bottom: 0;
         text-align: center;
-        white-space: nowrap;
+        white-space: normal;
+        /* Allow wrap to avoid "..." if possible, or keep nowrap */
+        color: var(--foreground);
+        /* Text needs to be visible on card bg */
+        text-shadow: none;
+        /* No shadow needed on plain bg */
+        line-height: 1.2;
+
+        /* 2 lines limit */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
     .viewLink {
         display: none;
-        /* Hide link text on small grid */
     }
 }
