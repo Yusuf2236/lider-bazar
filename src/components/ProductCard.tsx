@@ -6,6 +6,7 @@ import { Product } from '@/lib/data';
 import { formatPrice } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
 import { useToast } from '@/context/ToastContext';
+import { useWishlist } from '@/context/WishlistContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { getLocalizedContent } from '@/lib/i18n-utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -17,9 +18,11 @@ export default function ProductCard({ product }: { product: Product }) {
     const { addToCart } = useCart();
     const { addToast } = useToast();
     const { locale } = useLanguage();
+    const { toggleWishlist, isInWishlist } = useWishlist();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isWishlisted, setIsWishlisted] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+
+    const isWishlisted = isInWishlist(product.id);
 
     const localizedName = getLocalizedContent(product, locale, 'name');
 
@@ -29,35 +32,9 @@ export default function ProductCard({ product }: { product: Product }) {
         addToast(`${localizedName} added to cart!`);
     };
 
-    const toggleWishlist = async (e: React.MouseEvent) => {
+    const handleToggleWishlist = (e: React.MouseEvent) => {
         e.stopPropagation();
-        setIsWishlisted(!isWishlisted);
-
-        try {
-            const method = !isWishlisted ? 'POST' : 'DELETE';
-            const body = !isWishlisted ? JSON.stringify({ productId: product.id }) : undefined;
-            const url = !isWishlisted ? '/api/wishlist' : `/api/wishlist?productId=${product.id}`;
-
-            const res = await fetch(url, {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body
-            });
-
-            if (!res.ok) {
-                if (res.status === 401) {
-                    addToast('Please login to use wishlist', 'error');
-                } else {
-                    addToast('Failed to update wishlist', 'error');
-                }
-                setIsWishlisted(isWishlisted);
-            } else {
-                addToast(!isWishlisted ? 'Added to Wishlist' : 'Removed from Wishlist', 'info');
-            }
-        } catch (error) {
-            console.error(error);
-            setIsWishlisted(isWishlisted);
-        }
+        toggleWishlist(product);
     };
 
     return (
@@ -71,7 +48,7 @@ export default function ProductCard({ product }: { product: Product }) {
             >
                 <button
                     className={styles.wishlistButton}
-                    onClick={toggleWishlist}
+                    onClick={handleToggleWishlist}
                     aria-label="Toggle Wishlist"
                 >
                     {isWishlisted ? <FaHeart className={styles.heartFilled} /> : <FaRegHeart />}

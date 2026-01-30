@@ -6,6 +6,7 @@ import SessionProvider from '@/context/AuthProvider';
 import { CartProvider } from '@/context/CartContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { ToastProvider } from '@/context/ToastContext';
+import { WishlistProvider } from '@/context/WishlistContext';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import ClientLayoutWrapper from '@/components/ClientLayoutWrapper';
 import AnimatedBackground from '@/components/AnimatedBackground';
@@ -52,10 +53,12 @@ export default function RootLayout({
             <LanguageProvider>
               <ToastProvider>
                 <CartProvider>
-                  <GoogleAnalytics />
-                  <ClientLayoutWrapper>
-                    {children}
-                  </ClientLayoutWrapper>
+                  <WishlistProvider>
+                    <GoogleAnalytics />
+                    <ClientLayoutWrapper>
+                      {children}
+                    </ClientLayoutWrapper>
+                  </WishlistProvider>
                 </CartProvider>
               </ToastProvider>
             </LanguageProvider>

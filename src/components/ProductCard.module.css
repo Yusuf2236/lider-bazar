@@ -189,8 +189,14 @@
 
     .title {
         font-size: 0.85rem;
-        /* Slightly smaller */
         margin-bottom: 0.25rem;
+        height: auto;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        display: block;
     }
 
     .price {
@@ -228,14 +234,25 @@
         left: 0.5rem;
     }
 
-    /* Shrink the image visually on mobile */
+    /* Standardize image size: Vertical/Portrait style */
     .imageLink {
-        padding-top: 75%;
-        /* Reduced height (was 90%) */
+        padding-top: 135%;
+        /* Tall portrait box */
+        background: transparent;
     }
 
     .imageWrapper {
-        padding: 2rem;
-        /* Increased padding to shrink image (was 1.5rem) */
+        padding: 0;
+        /* Full bleed */
+        display: block;
+        /* Normal block to let image fill */
+    }
+
+    .image {
+        transform: none;
+        object-fit: cover;
+        /* Fill the area completely (toliq) */
+        width: 100%;
+        height: 100%;
     }
 }

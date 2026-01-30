@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { products, categories } from '@/lib/data';
 import ProductCard from '@/components/ProductCard';
 import { useLanguage } from '@/context/LanguageContext';
+import SearchFilter from '@/components/SearchFilter';
 import styles from '../catalog.module.css';
 
 export default function CategoryPage() {
@@ -12,15 +13,20 @@ export default function CategoryPage() {
     const slug = params.slug as string;
     const { t } = useLanguage();
 
+    const [searchTerm, setSearchTerm] = React.useState("");
+
     const category = categories.find(c => c.slug === slug);
 
-    // Filter products by category NAME, as defined in lib/data.ts
-    // In a real app, this should probably be based on category ID or slug
-    const filteredProducts = products.filter(p => {
-        // Find the category object that matches the product's category name
+    // Initial filtering by category
+    const categoryProducts = products.filter(p => {
         const productCategory = categories.find(c => c.name === p.category);
         return productCategory?.slug === slug;
     });
+
+    // Secondary filtering by search term
+    const displayedProducts = categoryProducts.filter(p =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     if (!category) {
         return (
@@ -36,14 +42,16 @@ export default function CategoryPage() {
                 <h1 className={styles.title}>
                     <span className={styles.highlight}>{category.name}</span>
                 </h1>
-                <p className={styles.subtitle}>{filteredProducts.length} {t.catalog?.itemsFound || 'mahsulotlar topildi'}</p>
+                <p className={styles.subtitle}>{displayedProducts.length} {t.catalog?.itemsFound || 'mahsulotlar topildi'}</p>
             </header>
 
+            <SearchFilter onSearch={setSearchTerm} placeholder="Mahsulot qidirish..." />
+
             <div className={styles.productGrid}>
-                {filteredProducts.map(product => (
+                {displayedProducts.map(product => (
                     <ProductCard key={product.id} product={product} />
                 ))}
-                {filteredProducts.length === 0 && (
+                {displayedProducts.length === 0 && (
                     <div className={styles.emptyState}>
                         <p>Hozircha bu turkumda mahsulotlar yo'q.</p>
                     </div>

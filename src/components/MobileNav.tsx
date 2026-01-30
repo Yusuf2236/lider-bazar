@@ -4,12 +4,21 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { FaHome, FaThLarge, FaShoppingCart, FaUser, FaSearch } from 'react-icons/fa';
+import { FaHome, FaThLarge, FaShoppingCart, FaHeart, FaUser } from 'react-icons/fa';
 import styles from './MobileNav.module.css';
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 
 export default function MobileNav() {
     const pathname = usePathname();
     const [activeTab, setActiveTab] = useState(pathname);
+    const { cartCount } = useCart();
+    const { wishlistCount } = useWishlist();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         setActiveTab(pathname);
@@ -19,14 +28,22 @@ export default function MobileNav() {
     const navItems = [
         { id: 'home', icon: FaHome, label: 'Home', href: '/' },
         { id: 'catalog', icon: FaThLarge, label: 'Katalog', href: '/catalog' },
-        { id: 'cart', icon: FaShoppingCart, label: 'Savat', href: '/checkout' }, // Assuming checkout/cart
+        {
+            id: 'cart',
+            icon: FaShoppingCart,
+            label: 'Savat',
+            href: '/checkout',
+            badge: cartCount
+        },
+        {
+            id: 'wishlist',
+            icon: FaHeart,
+            label: 'Sevimli',
+            href: '/wishlist', // Ensure this page exists or redirect accordingly
+            badge: wishlistCount
+        },
         { id: 'profile', icon: FaUser, label: 'Profil', href: '/profile' },
-        // { id: 'search', icon: FaSearch, label: 'Qidiruv', href: '/search' },
     ];
-
-    // Find custom index for indicator position if needed, 
-    // or just rely on layout rendering order.
-    // For specific "curve" animation we often use `layoutId`.
 
     return (
         <div className={styles.navContainer}>
@@ -42,6 +59,11 @@ export default function MobileNav() {
                     >
                         <span style={{ position: 'relative', zIndex: 3 }}>
                             <item.icon className={styles.icon} />
+                            {mounted && item.badge !== undefined && item.badge > 0 && (
+                                <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] px-1 rounded-full flex items-center justify-center min-w-[16px] h-[16px]">
+                                    {item.badge}
+                                </span>
+                            )}
                         </span>
 
                         <span className={styles.label}>{item.label}</span>
@@ -61,8 +83,6 @@ export default function MobileNav() {
                     </Link>
                 );
             })}
-
-            {/* SVG Filter for Gooey effect or perfect curve could be added here if customized */}
         </div>
     );
 }

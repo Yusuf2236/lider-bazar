@@ -4,10 +4,13 @@ import React from 'react';
 import Link from 'next/link';
 import { categories } from '@/lib/data';
 import { useLanguage } from '@/context/LanguageContext';
+import SearchFilter from '@/components/SearchFilter';
 import styles from './catalog.module.css';
 
 export default function CatalogPage() {
     const { t, locale } = useLanguage();
+
+    const [searchTerm, setSearchTerm] = React.useState("");
 
     const getLocalizedContent = (item: any, field: string) => {
         if (locale === 'uz') return item[`${field}Uz`] || item[field];
@@ -15,17 +18,23 @@ export default function CatalogPage() {
         return item[field];
     };
 
+    const filteredCategories = categories.filter(category =>
+        getLocalizedContent(category, 'name').toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className={styles.container}>
             <header className={styles.header}>
                 <h1 className={styles.title}>
                     <span className={styles.highlight}>{t.header.catalog}</span>
                 </h1>
-                <p className={styles.subtitle}>{categories.length} {t.catalog?.itemsFound || 'kategoriyalar topildi'}</p>
+                <p className={styles.subtitle}>{filteredCategories.length} {t.catalog?.itemsFound || 'kategoriyalar topildi'}</p>
             </header>
 
+            <SearchFilter onSearch={setSearchTerm} placeholder="Kategoriya qidirish..." />
+
             <div className={styles.productGrid}>
-                {categories.map(category => (
+                {filteredCategories.map(category => (
                     <Link href={`/catalog/${category.slug}`} key={category.id} className={styles.categoryCard}>
                         <div className={styles.imageWrapper}>
                             <div className={styles.imageOverlay} />

@@ -54,8 +54,9 @@
     }
 
     .productGrid {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+        /* Tighter gap to allow wider cards/images */
     }
 }
 
