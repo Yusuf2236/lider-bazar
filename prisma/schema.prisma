@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,37 +8,36 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
   password      String?
-  role          String    @default("USER") // USER, ADMIN
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  role          String     @default("USER")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   accounts      Account[]
-  sessions      Session[]
   orders        Order[]
-  wishlist      Wishlist[]
   reviews       Review[]
+  sessions      Session[]
+  wishlist      Wishlist[]
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -63,69 +59,64 @@ model VerificationToken {
 }
 
 model Category {
-  id       String    @id @default(cuid())
-  name     String
-  nameUz   String?
-  nameRu   String?
-  slug     String    @unique
-  image    String
-  externalId String? @unique // ID from YesPos
-  products Product[]
+  id         String    @id @default(cuid())
+  name       String
+  nameUz     String?
+  nameRu     String?
+  slug       String    @unique
+  image      String
+  externalId String?   @unique
+  products   Product[]
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  nameUz      String?
-  nameRu      String?
-  price       Int
-  oldPrice    Int?
-  image       String
-  description String?
+  id            String      @id @default(cuid())
+  name          String
+  nameUz        String?
+  nameRu        String?
+  price         Int
+  oldPrice      Int?
+  image         String
+  description   String?
   descriptionUz String?
   descriptionRu String?
-  rating      Float    @default(0)
-  isNew       Boolean  @default(false)
-  specs       String?  // JSON string for specifications
-  stock       Int      @default(100)
-  
-  categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
-  
-  externalId  String?  @unique // ID from YesPos
-
-  orderItems  OrderItem[]
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  inWishlists Wishlist[]
-  reviews     Review[]
+  rating        Float       @default(0)
+  isNew         Boolean     @default(false)
+  specs         String?
+  stock         Int         @default(100)
+  categoryId    String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  externalId    String?     @unique
+  orderItems    OrderItem[]
+  category      Category    @relation(fields: [categoryId], references: [id])
+  reviews       Review[]
+  inWishlists   Wishlist[]
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  userId    String
-  user      User        @relation(fields: [userId], references: [id])
-  status    String      @default("PENDING") // PENDING, PROCESSING, COMPLETED, CANCELLED
-  total     Int
-  items     OrderItem[]
-  address   String?     // Full text address for delivery
-  location  String?     // Coordinates for map location (lat,lng)
-  phone     String?     // Contact number for delivery
-  paymentMethod String  @default("cash") // cash, card
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id            String      @id @default(cuid())
+  userId        String
+  status        String      @default("PENDING")
+  total         Int
+  address       String?
+  location      String?
+  phone         String?
+  paymentMethod String      @default("cash")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  user          User        @relation(fields: [userId], references: [id])
+  items         OrderItem[]
 }
 
 model OrderItem {
   id        String  @id @default(cuid())
   orderId   String
-  order     Order   @relation(fields: [orderId], references: [id])
   productId String
-  product   Product @relation(fields: [productId], references: [id])
   quantity  Int
   price     Int
+  product   Product @relation(fields: [productId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id])
 }
 
 model BlockedIp {
@@ -138,10 +129,10 @@ model BlockedIp {
 model Wishlist {
   id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
 }
@@ -151,10 +142,10 @@ model Review {
   rating    Int
   comment   String?
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
 }

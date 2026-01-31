@@ -138,6 +138,14 @@
     /* Subtle hover */
 }
 
+.userName {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--foreground);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
 .badge {
     position: absolute;
     top: -5px;

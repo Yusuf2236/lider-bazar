@@ -133,20 +133,6 @@ export default function SettingsPage() {
                     <button
                         className={styles.logoutBtn}
                         onClick={() => signOut({ callbackUrl: '/' })}
-                        style={{
-                            background: 'rgba(239, 68, 68, 0.1)',
-                            color: '#ef4444',
-                            border: '1px solid rgba(239, 68, 68, 0.2)',
-                            padding: '1rem 2rem',
-                            borderRadius: '12px',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            fontSize: '1rem',
-                            fontWeight: '600',
-                            marginLeft: '1rem'
-                        }}
                     >
                         <FaSignOutAlt /> Profildan chiqish
                     </button>

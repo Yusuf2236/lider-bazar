@@ -169,7 +169,30 @@ input:checked+.slider:before {
     margin-top: 4rem;
     display: flex;
     justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
 }
+
+.logoutBtn {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.logoutBtn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    transform: translateY(-2px);
+}
+
 
 .saveBtn {
     background: var(--gradient-primary);
@@ -203,8 +226,16 @@ input:checked+.slider:before {
         font-size: 1.75rem;
     }
 
-    .settingsGrid {
-        grid-template-columns: 1fr;
+    .footer {
+        flex-direction: column-reverse;
         gap: 1rem;
+        width: 100%;
+    }
+
+    .saveBtn,
+    .logoutBtn {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
     }
 }

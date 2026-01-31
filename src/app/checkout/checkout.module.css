@@ -140,13 +140,7 @@
     padding-right: 0.5rem;
 }
 
-.deliverySection {
-    /* Desktop: default order */
-}
 
-.summarySection {
-    /* Desktop: default order */
-}
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {

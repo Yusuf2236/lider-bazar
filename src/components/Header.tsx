@@ -5,16 +5,18 @@ import Link from 'next/link';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
-import { FaSun, FaMoon, FaShoppingCart, FaUser, FaBars, FaCog, FaHistory, FaQuestionCircle, FaInfoCircle } from 'react-icons/fa';
+import { FaSun, FaMoon, FaShoppingCart, FaUser, FaBars, FaCog, FaHistory, FaQuestionCircle, FaInfoCircle, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import Search from './Search';
 import LanguageSwitcher from './LanguageSwitcher';
 import CartDrawer from './CartDrawer';
+import { useSession, signOut } from 'next-auth/react';
 import styles from './Header.module.css';
 
 export default function Header() {
     const { theme, toggleTheme } = useTheme();
     const { cartCount } = useCart();
     const { t } = useLanguage();
+    const { data: session } = useSession();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
@@ -79,23 +81,48 @@ export default function Header() {
                                 className={`${styles.iconButton} ${isDropdownOpen ? styles.active : ''}`}
                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                             >
-                                <FaUser />
+                                {session?.user?.image ? (
+                                    <img src={session.user.image} alt="" style={{ width: '24px', height: '24px', borderRadius: '50%' }} />
+                                ) : (
+                                    <FaUser />
+                                )}
                             </button>
 
                             {isDropdownOpen && (
                                 <div className={styles.dropdown}>
-                                    <Link href="/profile/settings" className={styles.dropdownItem}>
-                                        <FaCog /> {t.user.settings}
-                                    </Link>
-                                    <Link href="/profile/history" className={styles.dropdownItem}>
-                                        <FaHistory /> {t.user.history}
-                                    </Link>
-                                    <Link href="/help" className={styles.dropdownItem}>
-                                        <FaQuestionCircle /> {t.user.help}
-                                    </Link>
-                                    <Link href="/about" className={styles.dropdownItem}>
-                                        <FaInfoCircle /> {t.user.about}
-                                    </Link>
+                                    {session ? (
+                                        <>
+                                            <div className={styles.userName}>
+                                                {session.user?.name}
+                                            </div>
+                                            <Link href="/profile/settings" className={styles.dropdownItem}>
+                                                <FaCog /> {t.user.settings}
+                                            </Link>
+                                            <Link href="/profile/history" className={styles.dropdownItem}>
+                                                <FaHistory /> {t.user.history}
+                                            </Link>
+                                            <button onClick={() => signOut()} className={styles.dropdownItem} style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer' }}>
+                                                <FaSignOutAlt /> Sign Out
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Link href="/login" className={styles.dropdownItem}>
+                                                <FaSignInAlt /> Sign In
+                                            </Link>
+                                            <Link href="/register" className={styles.dropdownItem}>
+                                                <FaUser /> Register
+                                            </Link>
+                                        </>
+                                    )}
+                                    <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                                        <Link href="/help" className={styles.dropdownItem}>
+                                            <FaQuestionCircle /> {t.user.help}
+                                        </Link>
+                                        <Link href="/about" className={styles.dropdownItem}>
+                                            <FaInfoCircle /> {t.user.about}
+                                        </Link>
+                                    </div>
                                 </div>
                             )}
                         </div>

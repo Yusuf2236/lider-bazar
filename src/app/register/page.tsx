@@ -1,18 +1,33 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FaUser, FaEnvelope, FaLock, FaGoogle, FaApple } from 'react-icons/fa';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 
 export default function RegisterPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        const urlError = searchParams.get('error');
+        if (urlError) {
+            if (urlError === 'OAuthCallback') {
+                setError('Google authentication failed. Please try again.');
+            } else if (urlError === 'OAuthAccountNotLinked') {
+                setError('Email already used with another provider.');
+            } else {
+                setError('An error occurred during sign up.');
+            }
+        }
+    }, [searchParams]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,7 +42,20 @@ export default function RegisterPage() {
             });
 
             if (res.ok) {
-                router.push('/login');
+                // Automatically sign in after registration
+                const signRes = await signIn('credentials', {
+                    email,
+                    password,
+                    redirect: false,
+                });
+
+                if (signRes?.error) {
+                    setError('Account created, but automatic sign-in failed. Please login manually.');
+                    router.push('/login');
+                } else {
+                    router.push('/');
+                    router.refresh();
+                }
             } else {
                 const text = await res.text();
                 setError(text || 'Something went wrong');
@@ -168,7 +196,7 @@ export default function RegisterPage() {
                 <div style={{ display: 'flex', gap: '1rem' }}>
                     <button
                         type="button"
-                        onClick={() => import('next-auth/react').then(mod => mod.signIn('google', { callbackUrl: '/' }))}
+                        onClick={() => signIn('google', { callbackUrl: '/' })}
                         style={{
                             flex: 1, padding: '0.9rem', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.1)',
                             background: 'rgba(255, 255, 255, 0.05)', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', cursor: 'pointer',
@@ -179,7 +207,7 @@ export default function RegisterPage() {
                     </button>
                     <button
                         type="button"
-                        onClick={() => import('next-auth/react').then(mod => mod.signIn('apple', { callbackUrl: '/' }))}
+                        onClick={() => signIn('apple', { callbackUrl: '/' })}
                         style={{
                             flex: 1, padding: '0.9rem', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.1)',
                             background: 'rgba(255, 255, 255, 0.05)', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', cursor: 'pointer',

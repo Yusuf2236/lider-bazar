@@ -1,4 +1,9 @@
-// scripts/test-yespos-connection.ts
+import * as dotenv from 'dotenv';
+import path from 'path';
+
+// Load environment variables from the root .env file
+dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
+
 import { yesPosClient } from '../src/lib/yespos';
 
 async function main() {

@@ -2,17 +2,31 @@
 
 import React, { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { FaGoogle, FaApple, FaEnvelope, FaLock } from 'react-icons/fa';
 import Link from 'next/link';
 
 export default function LoginPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    React.useEffect(() => {
+        const urlError = searchParams.get('error');
+        if (urlError) {
+            if (urlError === 'OAuthCallback') {
+                setError('Google authentication failed. Please try again.');
+            } else if (urlError === 'OAuthAccountNotLinked') {
+                setError('Email already used with another provider.');
+            } else {
+                setError('An error occurred during sign in.');
+            }
+        }
+    }, [searchParams]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
