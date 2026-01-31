@@ -46,7 +46,7 @@ export default function CustomerMap({ orderId }: { orderId: string }) {
                 <span>Order #{orderId}</span>
                 <span className="text-blue-600">{status}</span>
             </div>
-            {/* @ts-expect-error: Leaflet types mismatch for center prop */}
+            {/* @ts-ignore */}
             <MapContainer
                 center={position}
                 zoom={13}
